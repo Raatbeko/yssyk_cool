@@ -3,7 +3,6 @@ package com.example.yssyk_cool.controller;
 import com.example.yssyk_cool.dto.complex.request.ComplexRequest;
 import com.example.yssyk_cool.dto.complex.response.ComplexResponse;
 import com.example.yssyk_cool.service.ComplexService;
-import com.example.yssyk_cool.service.FileService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -11,7 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController("api/complex")
+@RestController
+@RequestMapping("api/complex")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ComplexController {
