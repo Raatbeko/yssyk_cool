@@ -21,6 +21,6 @@ public class CommonReference extends BaseEntity{
     @JoinColumn(name = "type_id")
     CommonReferenceType commonReferenceType;
 
-    @Column(name = "title")
+    @Column(name = "title",unique = true,nullable = false)
     String title;
 }
