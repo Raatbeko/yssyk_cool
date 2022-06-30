@@ -1,1 +1,0 @@
-drop table review_complexes;
