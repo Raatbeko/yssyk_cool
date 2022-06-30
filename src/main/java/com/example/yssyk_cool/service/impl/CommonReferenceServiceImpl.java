@@ -19,12 +19,12 @@ public class CommonReferenceServiceImpl implements CommonReferenceService {
 
     @Override
     public List<CityResponse> getCities() {
-        return CommonReferenceMapper.INSTANCE.toCityResponse(commonReferenceRepository.findByCodeType(1L));
+        return CommonReferenceMapper.INSTANCE.toCityResponse(commonReferenceRepository.findByTypeCode(1L));
     }
 
     @Override
     public List<AreaResponse> getAreas() {
-        return CommonReferenceMapper.INSTANCE.toAreaResponse(commonReferenceRepository.findByCodeType(2L));
+        return CommonReferenceMapper.INSTANCE.toAreaResponse(commonReferenceRepository.findByTypeCode(2L));
     }
 
     @Override

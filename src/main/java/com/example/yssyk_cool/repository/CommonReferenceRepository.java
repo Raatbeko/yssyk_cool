@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface CommonReferenceRepository extends JpaRepository<CommonReference,Long> {
 
-    List<CommonReference> findByCodeType(Long codeType);
+    List<CommonReference> findByTypeCode(Long codeType);
 
     CommonReference findByTitle(String title);
 
