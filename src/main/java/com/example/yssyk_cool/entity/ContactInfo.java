@@ -3,9 +3,7 @@ package com.example.yssyk_cool.entity;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -21,7 +19,7 @@ public class ContactInfo extends BaseEntity {
     @Column(name = "phone_number",nullable = false)
     String phoneNumber;
 
-    String telegram;
+    String telegramAccountName;
 
     String email;
 

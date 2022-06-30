@@ -14,6 +14,8 @@ import javax.validation.constraints.NotNull;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ComplexRequest {
 
+    Long createdById;
+
     @NotNull
     String name;
 

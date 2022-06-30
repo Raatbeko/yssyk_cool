@@ -12,9 +12,9 @@ public class LocationResponse {
 
     Long id;
 
-    String country;
+    String city;
 
-    String areaId;
+    String area;
 
     String streetName;
 

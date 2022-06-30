@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ReviewRequest {
     @NotNull
-    Long postId;
+    Long complexId;
 
     Long userId;
 

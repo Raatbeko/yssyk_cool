@@ -18,6 +18,8 @@ public class ComplexResponse {
 
     Long id;
 
+    Long userId;
+
     String name;
 
     List<FileResponse> fileResponses;
