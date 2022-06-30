@@ -68,16 +68,6 @@ CREATE TABLE files (
                        url varchar(255) NULL,
                        CONSTRAINT files_pkey PRIMARY KEY (id)
 );
-CREATE TABLE reviews (
-                         id bigserial NOT NULL,
-                         create_time timestamp NOT NULL,
-                         update_time timestamp NULL,
-                         grade int8 NOT NULL,
-                         review varchar(255) NULL,
-                         created_by int8 NULL,
-                         CONSTRAINT reviews_pkey PRIMARY KEY (id),
-                         CONSTRAINT fkbhr9u7onobphbqso88pv0t82d FOREIGN KEY (created_by) REFERENCES users(id)
-);
 CREATE TABLE contact_info (
                               id bigserial NOT NULL,
                               create_time timestamp NOT NULL,
@@ -87,7 +77,6 @@ CREATE TABLE contact_info (
                               telegram varchar(255) NULL,
                               CONSTRAINT contact_info_pkey PRIMARY KEY (id)
 );
-
 CREATE TABLE complexes (
                            id bigserial NOT NULL,
                            create_time timestamp NOT NULL,
@@ -102,6 +91,19 @@ CREATE TABLE complexes (
                            CONSTRAINT fklhsc6ddk4to49jmmwfqimp9m7 FOREIGN KEY (created_by) REFERENCES users(id),
                            CONSTRAINT fkmtcab2yb8jg0m3rkeafqv4w04 FOREIGN KEY (contact_info_id) REFERENCES contact_info(id)
 );
+CREATE TABLE reviews (
+                         id bigserial NOT NULL,
+                         create_time timestamp NOT NULL,
+                         update_time timestamp NULL,
+                         grade int8 NOT NULL,
+                         review varchar(255) NULL,
+                         created_by int8 NULL,
+                         complex_id int8 NOT NULL,
+                         CONSTRAINT reviews_pkey PRIMARY KEY (id),
+                         CONSTRAINT fkbhr9u7onobphbqso88pv0t82d FOREIGN KEY (created_by) REFERENCES users(id),
+                         CONSTRAINT fk98ajl7pm083gfirfpkkka3hlx FOREIGN KEY (complex_id) REFERENCES complexes(id)
+);
+
 CREATE TABLE file_complexes (
                                 id bigserial NOT NULL,
                                 create_time timestamp NOT NULL,
@@ -111,14 +113,4 @@ CREATE TABLE file_complexes (
                                 CONSTRAINT file_complexes_pkey PRIMARY KEY (id),
                                 CONSTRAINT fk6q149sjr7pw8dqrqmcl6wsepd FOREIGN KEY (file_id) REFERENCES files(id),
                                 CONSTRAINT fk98ajl7pm083gfirfpkkka3hlx FOREIGN KEY (complex_id) REFERENCES complexes(id)
-);
-CREATE TABLE review_complexes (
-                                  id bigserial NOT NULL,
-                                  create_time timestamp NOT NULL,
-                                  update_time timestamp NULL,
-                                  complex_id int8 NOT NULL,
-                                  review_id int8 NOT NULL,
-                                  CONSTRAINT review_complexes_pkey PRIMARY KEY (id),
-                                  CONSTRAINT fk50uwq8nfie5d56bpkmbf2ibq FOREIGN KEY (complex_id) REFERENCES complexes(id),
-                                  CONSTRAINT fkd6pt9kkt7vpppx869glg2iiki FOREIGN KEY (review_id) REFERENCES reviews(id)
 );

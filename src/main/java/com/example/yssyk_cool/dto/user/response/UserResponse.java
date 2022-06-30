@@ -13,4 +13,6 @@ public class UserResponse {
     String login;
 
     String email;
+
+    String token;
 }

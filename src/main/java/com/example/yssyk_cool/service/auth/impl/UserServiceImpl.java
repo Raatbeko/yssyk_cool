@@ -52,12 +52,16 @@ public class UserServiceImpl implements UserService {
                         .password(passwordEncoder.encode(t.getPassword()))
                         .isActive(true)
                         .build());
+
         userRoleRepository
                 .save(UserRole.builder()
                         .role(roleRepository.findById(2L).orElse(new Role()))
                         .user(userEntity).build());
 
-        return UserMapper.INSTANCE.toUserResponseDto(userEntity);
+        UserResponse userResponse = UserMapper.INSTANCE.toUserResponseDto(userEntity);
+        userResponse.setToken(generateToken(userEntity));
+
+        return userResponse;
     }
 
     @Override
@@ -72,6 +76,12 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new UserSignInException("Неправильный логин или пароль!", HttpStatus.NOT_FOUND);
         }
+    }
+
+    @Override
+    public String generateToken(User user) {
+        return "Basic " + new String(Base64.getEncoder()
+                .encode((user.getLogin() + ":" + user.getPassword()).getBytes()));
     }
 
 
