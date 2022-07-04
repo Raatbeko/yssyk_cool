@@ -31,7 +31,7 @@ public class UserController {
         return userService.save(request);
     }
 
-    @PostMapping("/auto")
+    @GetMapping("/auto")
     public UserTokenResponse auto(@RequestBody UserAuthRequest request) {
         return userService.getToken(request);
     }
