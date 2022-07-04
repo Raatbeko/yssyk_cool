@@ -18,7 +18,7 @@ import javax.sql.DataSource;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SecurityConf extends WebSecurityConfigurerAdapter {
 
-    private final DataSource dataSource;
+    final DataSource dataSource;
 
     public SecurityConf(DataSource dataSource)     {
         this.dataSource = dataSource;
@@ -48,8 +48,8 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
 
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "api/v1/user/register").permitAll()
                 .antMatchers(HttpMethod.POST, "api/v1/user/auto").permitAll()
+                .antMatchers(HttpMethod.POST, "api/v1/user/register").permitAll()
 
                 .and()
                 .httpBasic();
