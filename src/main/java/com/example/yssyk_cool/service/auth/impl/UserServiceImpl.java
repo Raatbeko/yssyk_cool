@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserTokenResponse getToken(UserAuthRequest request) throws UserSignInException {
+    public UserTokenResponse getToken(UserAuthRequest request){
         User userEntity = userRepository.findByUserNameAndEMail(request.getLoginOrEmail());
         boolean isMatches = passwordEncoder.matches(request.getPassword(), userEntity.getPassword());
         if (isMatches) {
