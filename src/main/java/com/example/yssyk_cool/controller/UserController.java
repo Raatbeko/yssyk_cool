@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/user")
+@RequestMapping("api/v1/user")
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -30,7 +30,6 @@ public class UserController {
     public UserResponse register(@RequestBody UserRequest request) throws EmailNotBeEmptyException {
         return userService.save(request);
     }
-
 
     @PostMapping("/auto")
     public UserTokenResponse auto(@RequestBody UserAuthRequest request) {
