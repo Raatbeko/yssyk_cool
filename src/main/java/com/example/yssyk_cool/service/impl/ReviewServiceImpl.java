@@ -34,7 +34,7 @@ public class ReviewServiceImpl implements ReviewService {
     public ReviewResponse save(ReviewRequest t) {
         Review review = reviewRepository.save(Review.builder().review(t.getReview())
                 .grade(t.getGrade())
-                .user(userRepository.getOne(t.getUserId()))
+                .user(userRepository.findById(t.getUserId()).orElseThrow(()-> new NotFoundException("not found user",HttpStatus.NOT_FOUND)))
                 .complexId(complexService.findById(t.getComplexId()))
                 .build());
         return ReviewMapper.INSTANCE.toReviewResponse(review);
