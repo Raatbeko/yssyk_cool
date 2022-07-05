@@ -31,14 +31,14 @@ public class UserController {
         return userService.save(request);
     }
 
-    @PostMapping("/auto")
-    public UserTokenResponse auto(@RequestBody UserAuthRequest request) {
-        return userService.getToken(request);
-    }
+//    @PostMapping("/auto")
+//    public UserTokenResponse auto(@RequestBody UserAuthRequest request) {
+//        return userService.getToken(request);
+//    }
 
     @GetMapping
-    public List<UserResponse> getAll() {
-        return userService.getAll();
+    public UserTokenResponse getAll(@RequestBody UserAuthRequest request) {
+        return  userService.getToken(request);
     }
 
     @GetMapping("/{id}")
