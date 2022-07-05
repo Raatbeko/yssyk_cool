@@ -8,6 +8,7 @@ import com.example.yssyk_cool.entity.Role;
 import com.example.yssyk_cool.entity.User;
 import com.example.yssyk_cool.entity.UserRole;
 import com.example.yssyk_cool.exception.EmailNotBeEmptyException;
+import com.example.yssyk_cool.exception.NotFoundException;
 import com.example.yssyk_cool.exception.UserSignInException;
 import com.example.yssyk_cool.mapper.UserMapper;
 import com.example.yssyk_cool.repository.RoleRepository;
@@ -65,9 +66,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserTokenResponse getToken(UserAuthRequest request){
-        User userEntity = userRepository.findByUserNameAndEMail(request.getLoginOrEmail());
-        boolean isMatches = passwordEncoder.matches(request.getPassword(), userEntity.getPassword());
+    public UserTokenResponse getToken(UserAuthRequest request) {
+//        User userEntity = userRepository.findByUserNameAndEMail(request.getLoginOrEmail());
+        User userEntity = userRepository.findByEmail(request.getLoginOrEmail());
+        boolean isMatches;
+        if (userEntity != null){
+            isMatches = passwordEncoder.matches(request.getPassword(), userEntity.getPassword());
+        }else {
+            userEntity = userRepository.findByLogin(request.getLoginOrEmail());
+            isMatches = passwordEncoder.matches(request.getPassword(),userEntity.getPassword());
+        }
         if (isMatches) {
             String token = "Basic " + new String(Base64.getEncoder()
                     .encode((userEntity.getLogin() + ":" + request.getPassword()).getBytes()));
@@ -92,7 +100,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse findById(Long id) {
-        return UserMapper.INSTANCE.toUserResponseDto(userRepository.findById(id).get());
+        return UserMapper.INSTANCE.toUserResponseDto(
+                userRepository.findById(id).orElseThrow(() -> new NotFoundException("not found user", HttpStatus.NOT_FOUND)));
     }
 
     @Override
