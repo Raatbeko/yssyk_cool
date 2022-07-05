@@ -15,6 +15,7 @@ import javax.persistence.*;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CommonReference extends BaseEntity{
 
+    @Column(name = "code_type")
     Long typeCode;
 
     @ManyToOne

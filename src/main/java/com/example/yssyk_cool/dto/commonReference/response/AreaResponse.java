@@ -14,5 +14,5 @@ public class AreaResponse {
 
     String title;
 
-    Long codeType;
+    Long typeCode;
 }

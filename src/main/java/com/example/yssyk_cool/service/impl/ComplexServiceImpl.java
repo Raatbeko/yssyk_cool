@@ -42,7 +42,7 @@ public class ComplexServiceImpl implements ComplexService {
                 .averagePrice(t.getAveragePrice())
                 .contactInfo(contactInfoService.save(t.getContactInfoRequest()))
                 .location(locationService.save(t.getLocationRequest()))
-                .user(userRepository.getOne(t.getCreatedById())).build());
+                .user(userRepository.findById(t.getCreatedById()).orElseThrow(()-> new NotFoundException("user not found",HttpStatus.NOT_FOUND))).build());
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.example.yssyk_cool.service.impl;
 
 import com.example.yssyk_cool.dto.commonReference.response.AreaResponse;
-import com.example.yssyk_cool.dto.commonReference.response.CityResponse;
+import com.example.yssyk_cool.dto.commonReference.response.CommonResponse;
 import com.example.yssyk_cool.entity.CommonReference;
 import com.example.yssyk_cool.mapper.CommonReferenceMapper;
 import com.example.yssyk_cool.repository.CommonReferenceRepository;
@@ -18,13 +18,14 @@ public class CommonReferenceServiceImpl implements CommonReferenceService {
     final CommonReferenceRepository commonReferenceRepository;
 
     @Override
-    public List<CityResponse> getCities() {
-        return CommonReferenceMapper.INSTANCE.toCityResponse(commonReferenceRepository.findByTypeCode(1L));
+    public List<CommonResponse> getCities() {
+
+        return CommonReferenceMapper.INSTANCE.toResponse(commonReferenceRepository.findAllByTypeCode(1L));
     }
 
     @Override
-    public List<AreaResponse> getAreas() {
-        return CommonReferenceMapper.INSTANCE.toAreaResponse(commonReferenceRepository.findByTypeCode(2L));
+    public List<CommonResponse> getAreas() {
+        return CommonReferenceMapper.INSTANCE.toResponse(commonReferenceRepository.findAllByTypeCode(2L));
     }
 
     @Override

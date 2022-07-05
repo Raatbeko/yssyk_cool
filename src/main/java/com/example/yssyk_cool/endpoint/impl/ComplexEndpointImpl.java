@@ -7,6 +7,7 @@ import com.example.yssyk_cool.endpoint.ContactInfoEndpoint;
 import com.example.yssyk_cool.endpoint.LocationEndpoint;
 import com.example.yssyk_cool.entity.Complex;
 import com.example.yssyk_cool.service.ComplexService;
+import com.example.yssyk_cool.service.auth.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +24,14 @@ public class ComplexEndpointImpl implements ComplexEndpoint {
 
     final LocationEndpoint locationEndpoint;
 
+    final UserService userService;
+
     @Override
     public ComplexResponse save(ComplexRequest t) {
+
         Complex complex = complexService.save(t);
+        userService.addRole(t.getCreatedById());
+
         return ComplexResponse.builder()
                 .id(complex.getId())
                 .averagePrice(complex.getAveragePrice())

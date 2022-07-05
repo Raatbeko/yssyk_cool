@@ -26,7 +26,7 @@ public class ComplexController {
         return complexEndpoint.save(complexRequest);
     }
 
-    @GetMapping("/get-by-id/{id}")
+    @GetMapping("/{id}")
     public ComplexResponse getById(@PathVariable Long id) {
         return complexEndpoint.findById(id);
     }

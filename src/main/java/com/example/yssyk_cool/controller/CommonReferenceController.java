@@ -1,7 +1,7 @@
 package com.example.yssyk_cool.controller;
 
 import com.example.yssyk_cool.dto.commonReference.response.AreaResponse;
-import com.example.yssyk_cool.dto.commonReference.response.CityResponse;
+import com.example.yssyk_cool.dto.commonReference.response.CommonResponse;
 import com.example.yssyk_cool.service.CommonReferenceService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -23,13 +23,13 @@ public class CommonReferenceController {
     final CommonReferenceService commonReferenceService;
 
     @GetMapping("/get-cities")
-    List<CityResponse> getCities(){
-        return null;
+    public List<CommonResponse> getCities(){
+        return commonReferenceService.getCities();
     }
 
     @GetMapping("/get-areas")
-    List<AreaResponse> getAreas(){
-        return null;
+    public List<CommonResponse> getAreas(){
+        return commonReferenceService.getAreas();
     }
 
 }

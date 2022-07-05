@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CommonReferenceTypeRepository extends JpaRepository<CommonReferenceType,Long> {
+
 }

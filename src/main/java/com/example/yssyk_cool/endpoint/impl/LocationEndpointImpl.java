@@ -49,7 +49,7 @@ public class LocationEndpointImpl implements LocationEndpoint {
         return LocationResponse.builder()
                 .id(location.getId())
                 .city(location.getCity().getTitle())
-                .area(location.getArea().getTitle())
+                .area(location.getArea()!=null?location.getArea().getTitle():"")
                 .streetName(location.getStreetName())
                 .urlGoogleMap(location.getUrlGoogleMap())
                 .build();

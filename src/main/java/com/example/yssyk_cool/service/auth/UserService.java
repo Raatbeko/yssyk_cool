@@ -16,4 +16,6 @@ public interface UserService extends BaseService<UserResponse, UserRequest> {
 
     String generateToken(User user);
 
+    void addRole(Long id);
+
 }

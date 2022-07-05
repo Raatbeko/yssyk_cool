@@ -92,6 +92,18 @@ public class UserServiceImpl implements UserService {
                 .encode((user.getLogin() + ":" + user.getPassword()).getBytes()));
     }
 
+    @Override
+    public void addRole(Long id) {
+        User user = userRepository
+                .findById(id).orElseThrow(()->new NotFoundException("User not found",HttpStatus.NOT_FOUND));
+
+        userRoleRepository.save(UserRole.builder()
+                .role(roleRepository
+                        .findById(3L).orElseThrow(()->new NotFoundException("Role nto foudnd",HttpStatus.NOT_FOUND)))
+                .user(user)
+                .build());
+    }
+
 
     @Override
     public List<UserResponse> getAll() {
