@@ -36,7 +36,7 @@ public class UserController {
 //        return userService.getToken(request);
 //    }
 
-    @GetMapping
+    @PostMapping
     public UserTokenResponse getAll(@RequestBody UserAuthRequest request) {
         return  userService.getToken(request);
     }
