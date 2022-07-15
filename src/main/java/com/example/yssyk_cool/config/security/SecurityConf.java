@@ -70,9 +70,7 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"api/review/get-by-complex-id/{id}").permitAll()
                 .antMatchers(HttpMethod.GET,"api//review/get-all-by-complex-id/{id}").permitAll()
 
-                .antMatchers(HttpMethod.GET,"/swagger-ui.html").hasRole(SecurityRole.ROLE_ADMIN.getName())
-                .anyRequest()
-                .permitAll()
+                .antMatchers(HttpMethod.GET,"/swagger-ui.html").permitAll()
                 .and()
                 .httpBasic();
     }
