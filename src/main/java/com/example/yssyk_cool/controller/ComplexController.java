@@ -2,7 +2,6 @@ package com.example.yssyk_cool.controller;
 
 import com.example.yssyk_cool.dto.complex.request.ComplexRequest;
 import com.example.yssyk_cool.dto.complex.response.ComplexResponse;
-import com.example.yssyk_cool.endpoint.ComplexEndpoint;
 import com.example.yssyk_cool.service.ComplexService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -19,26 +18,26 @@ import java.util.List;
 @Slf4j
 public class ComplexController {
 
-    final ComplexEndpoint complexEndpoint;
+    final ComplexService complexService;
 
     @PostMapping("/save")
     public ComplexResponse save(@RequestBody ComplexRequest complexRequest) {
-        return complexEndpoint.save(complexRequest);
+        return complexService.save(complexRequest);
     }
 
     @GetMapping("/{id}")
     public ComplexResponse getById(@PathVariable Long id) {
-        return complexEndpoint.findById(id);
+        return complexService.findById(id);
     }
 
     @GetMapping
     public List<ComplexResponse> getAll() {
-        return complexEndpoint.getAll();
+        return complexService.getAll();
     }
 
     @GetMapping("/get-by-user-id/{id}")
     public List<ComplexResponse> getByUserId(@PathVariable Long id){
-        return complexEndpoint.findAllByUserId(id);
+        return complexService.findAllByUserId(id);
     }
 
     @GetMapping("/search/{search}")

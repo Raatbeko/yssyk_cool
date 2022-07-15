@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -43,12 +44,12 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
+                .csrf().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .csrf().disable()
-
                 .authorizeRequests()
+                .antMatchers(HttpMethod.GET,"/").permitAll()
                 .antMatchers(HttpMethod.POST, "api/v1/user/auto").permitAll()
                 .antMatchers(HttpMethod.POST, "api/v1/user/register").permitAll()
                 .antMatchers(HttpMethod.GET,"api/v1/user/{id}").permitAll()
@@ -57,7 +58,7 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"api/common-reference/get-cities").permitAll()
                 .antMatchers(HttpMethod.GET,"api/common-reference/get-areas").permitAll()
 
-                .antMatchers(HttpMethod.POST,"api/complex/save").hasRole(SecurityRole.ROLE_USER .getName())
+                .antMatchers(HttpMethod.POST,"api/complex/save").hasAnyRole(SecurityRole.ROLE_USER .getName(),SecurityRole.ROLE_PROVIDER.getName())
                 .antMatchers(HttpMethod.GET,"api/complex/{id}").permitAll()
                 .antMatchers(HttpMethod.GET,"api/complex").permitAll()
                 .antMatchers(HttpMethod.GET,"api/complex/get-by-user-id/{id}").hasRole(SecurityRole.ROLE_PROVIDER.getName())
@@ -68,6 +69,10 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST,"api/review/save").hasRole(SecurityRole.ROLE_USER.getName())
                 .antMatchers(HttpMethod.GET,"api/review/get-by-complex-id/{id}").permitAll()
                 .antMatchers(HttpMethod.GET,"api//review/get-all-by-complex-id/{id}").permitAll()
+
+                .antMatchers(HttpMethod.GET,"/swagger-ui.html").hasRole(SecurityRole.ROLE_ADMIN.getName())
+                .anyRequest()
+                .permitAll()
                 .and()
                 .httpBasic();
     }

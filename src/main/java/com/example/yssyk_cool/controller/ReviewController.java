@@ -22,17 +22,17 @@ public class ReviewController {
     final ReviewService reviewService;
 
     @PostMapping("/save")
-    public ReviewResponse save(ReviewRequest request){
+    public ReviewResponse save(@RequestBody ReviewRequest request){
         return reviewService.save(request);
     }
 
-    @GetMapping("/get-by-complex-id/{id}")
-    public ReviewResponse getByComplexId(@PathVariable("id") Complex complex){
-        return reviewService.getByComplexId(complex);
+    @GetMapping("/{id}")
+    public ReviewResponse getByComplexId(@PathVariable("id") Long id){
+        return reviewService.findById(id);
     }
 
     @GetMapping("/get-all-by-complex-id/{id}")
-    public List<ReviewResponse> getAllByComplexId(@PathVariable("id") Long id){
-        return getAllByComplexId(id);
+    public List<ReviewResponse> getAllByComplexId(@PathVariable("id") Complex complex){
+        return reviewService.getAllByComplexId(complex);
     }
 }

@@ -8,7 +8,7 @@ import com.example.yssyk_cool.exception.EmailNotBeEmptyException;
 import com.example.yssyk_cool.service.auth.UserService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.SneakyThrows;
+
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +37,8 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserResponse> getAll(@RequestBody UserAuthRequest request) {
+    public List<UserResponse> getAll()
+    {
         return userService.getAll();
     }
 

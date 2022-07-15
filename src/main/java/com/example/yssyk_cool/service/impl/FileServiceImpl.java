@@ -4,8 +4,10 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.example.yssyk_cool.dto.file.request.FileComplexRequest;
 import com.example.yssyk_cool.dto.file.response.FileResponse;
+import com.example.yssyk_cool.entity.FileComplex;
 import com.example.yssyk_cool.entity.FileMulti;
 import com.example.yssyk_cool.exception.FileNotFoundException;
+import com.example.yssyk_cool.repository.FileComplexRepository;
 import com.example.yssyk_cool.repository.FileRepository;
 import com.example.yssyk_cool.service.FileService;
 import com.example.yssyk_cool.util.FileType;
@@ -30,7 +32,7 @@ public class FileServiceImpl implements FileService {
 
     final FileRepository fileRepository;
 
-    final static String CLOUDINARY_URL = "CLOUDINARY_URL=cloudinary://379513361635134:yG00u8tW6g3_Hv1OK0QpVj7ZM0w@doltdryzx";
+    final static String CLOUDINARY_URL = "cloudinary://379513361635134:yG00u8tW6g3_Hv1OK0QpVj7ZM0w@doltdryzx";
 
     @Override
     public FileResponse save(FileComplexRequest fileRequest) {
@@ -48,6 +50,7 @@ public class FileServiceImpl implements FileService {
                     .name(fileRequest.getMultipartFile().getName())
                     .url((String)uploadResult.get("url") )
                     .build();
+
             fileRepository.save(fileEntity);
 
             return FileResponse.builder()

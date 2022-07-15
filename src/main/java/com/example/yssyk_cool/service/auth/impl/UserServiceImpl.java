@@ -15,13 +15,13 @@ import com.example.yssyk_cool.repository.RoleRepository;
 import com.example.yssyk_cool.repository.UserRepository;
 import com.example.yssyk_cool.repository.UserRoleRepository;
 import com.example.yssyk_cool.service.auth.UserService;
+import com.example.yssyk_cool.util.SecurityRole;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Base64;
 import java.util.List;
@@ -30,7 +30,6 @@ import java.util.List;
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
-@Transactional
 public class UserServiceImpl implements UserService {
 
     final UserRepository userRepository;
@@ -45,7 +44,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse save(UserRequest t) {
         if (t.getEmail() == null)
-            throw new EmailNotBeEmptyException("email is empty", HttpStatus.valueOf("EMAIL_NOT_BE_EMPTY"));
+            throw new EmailNotBeEmptyException("email is empty", HttpStatus.BAD_REQUEST);
+
+        checkToHave(t.getLogin(),t.getEmail());
+
         User userEntity = userRepository
                 .save(User.builder()
                         .login(t.getLogin())
@@ -60,14 +62,15 @@ public class UserServiceImpl implements UserService {
                         .user(userEntity).build());
 
         UserResponse userResponse = UserMapper.INSTANCE.toUserResponseDto(userEntity);
-        userResponse.setToken(generateToken(userEntity));
+
+        userResponse.setToken(generateToken(t));
 
         return userResponse;
     }
 
     @Override
     public UserTokenResponse getToken(UserAuthRequest request) {
-//        User userEntity = userRepository.findByUserNameAndEMail(request.getLoginOrEmail());
+//      User userEntity = userRepository.findByUserNameAndEMail(request.getLoginOrEmail());
         User userEntity = userRepository.findByEmail(request.getLoginOrEmail());
         boolean isMatches;
         if (userEntity != null){
@@ -86,22 +89,39 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Override
-    public String generateToken(User user) {
+
+    private String generateToken(UserRequest user) {
         return "Basic " + new String(Base64.getEncoder()
                 .encode((user.getLogin() + ":" + user.getPassword()).getBytes()));
     }
 
     @Override
-    public void addRole(Long id) {
+    public void addRoleToUser(Long id) {
         User user = userRepository
-                .findById(id).orElseThrow(()->new NotFoundException("User not found",HttpStatus.NOT_FOUND));
-
+                .findById(id).orElseThrow(()->new NotFoundException("User not found",HttpStatus.BAD_REQUEST));
+        List<UserRole> roles = userRoleRepository.findByUserId(user.getId());
+        for (UserRole role : roles) {
+            if (role.getRole().getRole().equals(SecurityRole.ROLE_PROVIDER.name())){
+                return;
+            }
+        }
         userRoleRepository.save(UserRole.builder()
                 .role(roleRepository
-                        .findById(3L).orElseThrow(()->new NotFoundException("Role nto foudnd",HttpStatus.NOT_FOUND)))
+                        .findById(3L).orElseThrow(()->new NotFoundException("Role not foudnd",HttpStatus.BAD_REQUEST)))
                 .user(user)
                 .build());
+    }
+
+    private void checkToHave(String login, String email){
+        User user = userRepository.findByLogin(login);
+        if (user != null){
+            throw new UserSignInException("Такой login уже сушествует!",HttpStatus.BAD_REQUEST);
+        }
+        user = null;
+        user = userRepository.findByEmail(email);
+        if (user != null){
+            throw new UserSignInException("Такой email уже сушествует!",HttpStatus.BAD_REQUEST);
+        }
     }
 
 
@@ -113,7 +133,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse findById(Long id) {
         return UserMapper.INSTANCE.toUserResponseDto(
-                userRepository.findById(id).orElseThrow(() -> new NotFoundException("not found user", HttpStatus.NOT_FOUND)));
+                userRepository.findById(id).orElseThrow(() -> new NotFoundException("not found user", HttpStatus.BAD_REQUEST)));
     }
 
     @Override

@@ -10,9 +10,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class LocationRequest {
 
-    Long complexId;
-
-    String country;
+    String city;
 
     String area;
 

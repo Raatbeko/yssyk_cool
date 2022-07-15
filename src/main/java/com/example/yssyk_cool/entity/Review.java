@@ -27,7 +27,7 @@ public class Review extends BaseEntity {
     User user;
 
     @ManyToOne
-    @JoinColumn(name = "compelx_id")
+    @JoinColumn(name = "complex_id")
     Complex complexId;
 
 }

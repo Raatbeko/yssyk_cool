@@ -19,6 +19,7 @@ public class ContactInfo extends BaseEntity {
     @Column(name = "phone_number",nullable = false)
     String phoneNumber;
 
+    @Column(name = "telegram")
     String telegramAccountName;
 
     String email;

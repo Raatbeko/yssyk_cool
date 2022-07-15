@@ -10,8 +10,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ContactInfoRequest {
 
-    Long complexId;
-
     String phoneNumber;
 
     String telegramAccountName;

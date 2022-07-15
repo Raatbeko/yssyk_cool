@@ -6,6 +6,7 @@ import com.example.yssyk_cool.entity.Complex;
 import com.example.yssyk_cool.entity.Review;
 import com.example.yssyk_cool.exception.NotFoundException;
 import com.example.yssyk_cool.mapper.ReviewMapper;
+import com.example.yssyk_cool.repository.ComplexRepository;
 import com.example.yssyk_cool.repository.ReviewRepository;
 import com.example.yssyk_cool.repository.UserRepository;
 import com.example.yssyk_cool.service.ComplexService;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ReviewServiceImpl implements ReviewService {
 
-    final ComplexService complexService;
+    final ComplexRepository complexRepository;
 
     final ReviewRepository reviewRepository;
 
@@ -32,10 +33,11 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ReviewResponse save(ReviewRequest t) {
-        Review review = reviewRepository.save(Review.builder().review(t.getReview())
+        Review review = reviewRepository.save(Review.builder()
+                .review(t.getReview())
                 .grade(t.getGrade())
                 .user(userRepository.findById(t.getUserId()).orElseThrow(()-> new NotFoundException("not found user",HttpStatus.NOT_FOUND)))
-                .complexId(complexService.findById(t.getComplexId()))
+                .complexId(complexRepository.findById(t.getComplexId()).orElseThrow(() -> new NotFoundException("complex not found",HttpStatus.BAD_REQUEST)))
                 .build());
         return ReviewMapper.INSTANCE.toReviewResponse(review);
     }
