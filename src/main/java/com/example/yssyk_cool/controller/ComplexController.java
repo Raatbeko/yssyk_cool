@@ -15,6 +15,7 @@ import java.util.List;
 @RequestMapping("api/complex")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Slf4j
 public class ComplexController {
 

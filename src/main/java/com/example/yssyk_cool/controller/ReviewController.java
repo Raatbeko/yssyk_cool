@@ -16,6 +16,7 @@ import java.util.List;
 @RequestMapping("api/review")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Slf4j
 public class ReviewController {
 

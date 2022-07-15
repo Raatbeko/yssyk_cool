@@ -19,6 +19,7 @@ import java.util.List;
 @RequestMapping("api/file")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Slf4j
 public class FileComplexController {
 
