@@ -1,5 +1,6 @@
 package com.example.yssyk_cool.service;
 
+import com.example.yssyk_cool.dto.complex.request.ComplexForUpdateRequest;
 import com.example.yssyk_cool.dto.complex.request.ComplexRequest;
 import com.example.yssyk_cool.dto.complex.response.ComplexResponse;
 import com.example.yssyk_cool.dto.file.response.FileResponse;
@@ -13,5 +14,10 @@ public interface ComplexService extends BaseService<ComplexResponse, ComplexRequ
 
     List<ComplexResponse> findAllByUserId(Long userId);
 
-    List<FileResponse> getAllFile(Long id);
+
+    ComplexResponse update(ComplexForUpdateRequest complexRequest);
+
+    List<FileResponse> getAllFile(Long complexId);
+
+    List<ComplexResponse> search(String search);
 }

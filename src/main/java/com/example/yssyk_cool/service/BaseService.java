@@ -1,14 +1,15 @@
 package com.example.yssyk_cool.service;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 public interface BaseService<Response, Request> {
 
-    Response save(Request t);
+    Response save(Request t) ;
 
     List<Response> getAll();
 
     Response findById(Long id);
 
-    Boolean delete(Long id);
+    Response delete(Long id);
 }

@@ -15,8 +15,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FileMulti extends BaseEntity {
-    @Column(name = "name")
-    String name;
+    @Column(name = "path")
+    String path;
 
     @Column(name = "url")
     String url;

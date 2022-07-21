@@ -18,7 +18,7 @@ values(now(),'Toktonalieva','jakdf1234124hfjahsjfdkha',1,2),
       (now(),'Bokonbaeva','ja123412536fjahsjfdkha',3,4),
       (now(),'Razakova','jakdfa8596574352kha',2,2);
 
-insert into complexes(create_time,average_price,complex_name,contact_info_id,location_id,created_by)
-values(now(),'12500','Manas',1,1,2),
-      (now(),'1000$','Complex',2,2,2),
-      (now(),'2000','Brat',3,3,2);
+insert into complexes(create_time,average_price,complex_name,contact_info_id,location_id,created_by,types)
+values(now(),'12500','Manas',1,1,2,'HOTEL'),
+      (now(),'1000$','Complex',2,2,2,'PENSION'),
+      (now(),'2000','Brat',3,3,2,'PENSION');

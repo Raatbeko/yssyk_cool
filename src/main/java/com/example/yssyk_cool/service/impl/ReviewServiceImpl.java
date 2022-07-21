@@ -55,7 +55,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Boolean delete(Long id) {
+    public ReviewResponse delete(Long id) {
         return null;
     }
 

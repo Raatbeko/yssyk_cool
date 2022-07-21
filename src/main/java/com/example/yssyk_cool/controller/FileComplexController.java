@@ -2,17 +2,25 @@ package com.example.yssyk_cool.controller;
 
 import com.example.yssyk_cool.dto.file.request.FileComplexRequest;
 import com.example.yssyk_cool.dto.file.response.FileResponse;
+import com.example.yssyk_cool.exception.StorageException;
 import com.example.yssyk_cool.repository.FileRepository;
 import com.example.yssyk_cool.service.ComplexService;
 import com.example.yssyk_cool.service.FileComplexService;
 import com.example.yssyk_cool.service.FileService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.entity.FileEntity;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -27,14 +35,34 @@ public class FileComplexController {
 
     final ComplexService complexService;
 
-    @RequestMapping(value = "/save" , method = RequestMethod.POST, consumes = { "multipart/form-data" })
-    public FileResponse save(@ModelAttribute FileComplexRequest fileComplexRequest){
-        return fileService.save(fileComplexRequest);
+    final FileService service;
+
+    @RequestMapping(value = "/save/{id}", method = RequestMethod.POST, consumes = {"multipart/form-data"})
+    @ApiOperation("Сохранение фотки по id комплекса")
+    public FileResponse save(@ModelAttribute MultipartFile multipartFile,
+                             @PathVariable("id") Long complexId) {
+        return fileService.save(FileComplexRequest.builder()
+                .complexId(complexId)
+                .multipartFile(multipartFile)
+                .build());
     }
 
     @GetMapping("/get-by-complex-id/{id}")
-    public List<FileResponse> getByComplexId(@PathVariable Long id){
+    @ApiOperation("Получить все фотки комплекса по его id")
+    public List<FileResponse> getByComplexId(@PathVariable Long id) {
         return complexService.getAllFile(id);
+
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<InputStreamResource> get(@PathVariable Long id) throws StorageException, IOException {
+
+        InputStreamResource inputStreamResource = new InputStreamResource(service.load(id).getInputStream());
+
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(inputStreamResource);
     }
 
 }

@@ -7,6 +7,8 @@ import com.example.yssyk_cool.dto.file.response.FileResponse;
 import com.example.yssyk_cool.entity.FileComplex;
 import com.example.yssyk_cool.entity.FileMulti;
 import com.example.yssyk_cool.exception.FileNotFoundException;
+import com.example.yssyk_cool.exception.NotFoundException;
+import com.example.yssyk_cool.exception.StorageException;
 import com.example.yssyk_cool.repository.FileComplexRepository;
 import com.example.yssyk_cool.repository.FileRepository;
 import com.example.yssyk_cool.service.FileService;
@@ -14,15 +16,23 @@ import com.example.yssyk_cool.util.FileType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 import java.io.File;
-import java.nio.file.Files;
+import java.net.MalformedURLException;
+import java.nio.file.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+
+import static java.nio.file.Path.*;
 
 
 @Service
@@ -32,36 +42,66 @@ public class FileServiceImpl implements FileService {
 
     final FileRepository fileRepository;
 
-    final static String CLOUDINARY_URL = "cloudinary://379513361635134:yG00u8tW6g3_Hv1OK0QpVj7ZM0w@doltdryzx";
-
+    //    @Override
+//    public FileResponse save(FileComplexRequest fileRequest) {
+//        File file;
+//        try {
+//            file = Files.createTempFile(System.currentTimeMillis() + "", Objects.requireNonNull(fileRequest.getMultipartFile().getOriginalFilename())
+//                    .substring(fileRequest.getMultipartFile().getOriginalFilename().length()-4)).toFile();
+//            fileRequest.getMultipartFile().transferTo(file);
+//
+//            Cloudinary cloudinary = new Cloudinary(CLOUDINARY_URL);
+//            Map uploadResult = cloudinary.uploader().upload(file, ObjectUtils.asMap());
+//
+//            FileMulti fileEntity = FileMulti.builder()
+//                    .fileType(FileType.IMG)
+//                    .name(fileRequest.getMultipartFile().getName())
+//                    .url((String)uploadResult.get("url") )
+//                    .build();
+//
+//            fileRepository.save(fileEntity);
+//
+//            return FileResponse.builder()
+//                    .id(fileEntity.getId())
+//                    .url(fileEntity.getUrl()).build();
+//
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//        }
+//
+//        //todo null?
+//        return null;
+//    }
     @Override
-    public FileResponse save(FileComplexRequest fileRequest) {
-        File file;
+    public FileResponse save(FileComplexRequest file) {
         try {
-            file = Files.createTempFile(System.currentTimeMillis() + "", Objects.requireNonNull(fileRequest.getMultipartFile().getOriginalFilename())
-                    .substring(fileRequest.getMultipartFile().getOriginalFilename().length()-4)).toFile();
-            fileRequest.getMultipartFile().transferTo(file);
+            LocalDateTime localDateTime = LocalDateTime.now();
+            String URl = "C:\\Users\\Dell\\IdeaProjects\\yssyk_cool\\src\\main\\resources\\images\\";
+            File tempFile = new java.io.File(URl);
 
-            Cloudinary cloudinary = new Cloudinary(CLOUDINARY_URL);
-            Map uploadResult = cloudinary.uploader().upload(file, ObjectUtils.asMap());
+            if (!tempFile.exists()) {
+                tempFile.mkdir();
+            }
+            String fileName = getFileName(file.getMultipartFile()) + "_" + formatDate(localDateTime) + "." + getExtension(file.getMultipartFile());
 
-            FileMulti fileEntity = FileMulti.builder()
-                    .fileType(FileType.IMG)
-                    .name(fileRequest.getMultipartFile().getName())
-                    .url((String)uploadResult.get("url") )
-                    .build();
+            String filePath = URl + fileName;
+            Files.copy(file.getMultipartFile().getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
 
-            fileRepository.save(fileEntity);
+            FileMulti fileInDataBase = fileRepository.save(
+                    FileMulti.builder()
+                            .path(filePath)
+                            .url(tempFile.getAbsolutePath())
+                            .build()
+            );
 
             return FileResponse.builder()
-                    .id(fileEntity.getId())
-                    .url(fileEntity.getUrl()).build();
+                    .id(fileInDataBase.getId())
+                    .url(fileInDataBase.getUrl())
+                    .build();
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-
-        //todo null?
         return null;
     }
 
@@ -83,16 +123,46 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public FileResponse findById(Long id) {
-        FileMulti fileEntity = fileRepository.findById(id).get();
-        if (fileEntity == null) throw new FileNotFoundException("file not found", HttpStatus.NOT_FOUND);
+        FileMulti fileEntity = fileRepository.findById(id).orElseThrow(() -> new FileNotFoundException("file not found", HttpStatus.BAD_REQUEST));
         return FileResponse.builder()
                 .id(fileEntity.getId())
                 .url(fileEntity.getUrl())
                 .build();
     }
 
+    public Resource load(Long id) throws StorageException {
+        FileMulti fileEntity = fileRepository.findById(id).orElseThrow(() -> new FileNotFoundException("file not found", HttpStatus.BAD_REQUEST));
+
+            return null;
+
+    }
+
     @Override
-    public Boolean delete(Long id) {
+    public FileResponse delete(Long id) {
         return null;
     }
+
+    private static String getExtension(MultipartFile file) {
+
+        String fullName = file.getOriginalFilename();
+
+        assert fullName != null;
+        int dot = fullName.lastIndexOf('.') + 1;
+
+        return fullName.substring(dot);
+    }
+
+    private static String getFileName(MultipartFile file) {
+        String fullName = file.getOriginalFilename();
+
+        assert fullName != null;
+        int dot = fullName.lastIndexOf('.');
+
+        return fullName.substring(0, dot);
+    }
+
+    private static String formatDate(LocalDateTime dateTime) {
+        return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
+    }
+
 }

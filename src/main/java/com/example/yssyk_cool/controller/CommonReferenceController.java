@@ -3,6 +3,7 @@ package com.example.yssyk_cool.controller;
 import com.example.yssyk_cool.dto.commonReference.response.AreaResponse;
 import com.example.yssyk_cool.dto.commonReference.response.CommonResponse;
 import com.example.yssyk_cool.service.CommonReferenceService;
+import io.swagger.annotations.ApiOperation;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -20,16 +21,19 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @CrossOrigin(origins = "*", maxAge = 3600)
 @Slf4j
+@ApiOperation("Получение района и города")
 public class CommonReferenceController {
 
     final CommonReferenceService commonReferenceService;
 
     @GetMapping("/get-cities")
+    @ApiOperation("Получить города")
     public List<CommonResponse> getCities(){
         return commonReferenceService.getCities();
     }
 
     @GetMapping("/get-areas")
+    @ApiOperation("Получить районы")
     public List<CommonResponse> getAreas(){
         return commonReferenceService.getAreas();
     }

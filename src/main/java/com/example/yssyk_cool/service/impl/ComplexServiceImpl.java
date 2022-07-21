@@ -1,5 +1,6 @@
 package com.example.yssyk_cool.service.impl;
 
+import com.example.yssyk_cool.dto.complex.request.ComplexForUpdateRequest;
 import com.example.yssyk_cool.dto.complex.request.ComplexRequest;
 import com.example.yssyk_cool.dto.complex.response.ComplexResponse;
 import com.example.yssyk_cool.dto.file.response.FileResponse;
@@ -20,6 +21,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.io.FileNotFoundException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,7 +48,7 @@ public class ComplexServiceImpl implements ComplexService {
     @Override
     public ComplexResponse save(ComplexRequest t) {
         Complex complex = complexRepository.save(Complex.builder()
-                .complexName(t.getName())
+                .complexName(t.getNameComplex())
                 .averagePrice(t.getAveragePrice())
                 .contactInfo(contactInfoService.save(t.getContactInfoRequest()))
                 .location(locationService.save(t.getLocationRequest()))
@@ -69,15 +72,17 @@ public class ComplexServiceImpl implements ComplexService {
     public List<ComplexResponse> getAll() {
 
         return complexRepository.findAll().stream()
-                .map(complex -> ComplexResponse.builder()
-                        .id(complex.getId())
-                        .averagePrice(complex.getAveragePrice())
-                        .name(complex.getComplexName())
-                        .userId(complex.getUser().getId())
-                        .contactInfoResponse(ContactInfoMapper.INSTANCE.toContactResponse(complex.getContactInfo()))
-                        .fileResponses(getAllFile(complex.getId()))
-                        .locationResponse(locationMapper.toLocationResponse(complex.getLocation())
-                        ).build()).collect(Collectors.toList());
+                .filter(complex -> complex.getDeletedBy() == null)
+                .map(complex ->
+                        ComplexResponse.builder()
+                                .id(complex.getId())
+                                .averagePrice(complex.getAveragePrice())
+                                .name(complex.getComplexName())
+                                .userId(complex.getUser().getId())
+                                .contactInfoResponse(ContactInfoMapper.INSTANCE.toContactResponse(complex.getContactInfo()))
+                                .fileResponses(getAllFile(complex.getId()))
+                                .locationResponse(locationMapper.toLocationResponse(complex.getLocation())
+                                ).build()).collect(Collectors.toList());
     }
 
     @Override
@@ -85,7 +90,24 @@ public class ComplexServiceImpl implements ComplexService {
         Complex complex = complexRepository
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException("Not found", HttpStatus.BAD_REQUEST));
+        if (complex.getDeletedBy() == null)
+            return ComplexResponse.builder()
+                    .id(complex.getId())
+                    .averagePrice(complex.getAveragePrice())
+                    .name(complex.getComplexName())
+                    .userId(complex.getUser().getId())
+                    .contactInfoResponse(ContactInfoMapper.INSTANCE.toContactResponse(complex.getContactInfo()))
+                    .fileResponses(getAllFile(complex.getId()))
+                    .locationResponse(locationMapper.toLocationResponse(complex.getLocation())
+                    ).build();
+        throw new NotFoundException("its complex was deleted", HttpStatus.BAD_REQUEST);
+    }
 
+    @Override
+    public ComplexResponse delete(Long id) {
+        Complex complex = complexRepository.findById(id).orElseThrow(() -> new NotFoundException("Complex for delete not found", HttpStatus.BAD_REQUEST));
+        complex.setDeletedBy(complex.getUser());
+        complex.setDeletedAt(LocalDateTime.now());
         return ComplexResponse.builder()
                 .id(complex.getId())
                 .averagePrice(complex.getAveragePrice())
@@ -93,16 +115,11 @@ public class ComplexServiceImpl implements ComplexService {
                 .userId(complex.getUser().getId())
                 .contactInfoResponse(ContactInfoMapper.INSTANCE.toContactResponse(complex.getContactInfo()))
                 .fileResponses(getAllFile(complex.getId()))
-                .locationResponse(locationMapper.toLocationResponse(complex.getLocation())
-                ).build();
+                .locationResponse(locationMapper.toLocationResponse(complex.getLocation()))
+                .deleted(true).build();
+
     }
 
-    @Override
-    public Boolean delete(Long id) {
-        return null;
-    }
-
-    @Override
     public List<FileResponse> getAllFile(Long id) {
         return fileComplex.findFileComplexByComplexesId(id).stream()
                 .map(file -> FileResponse.builder()
@@ -112,12 +129,20 @@ public class ComplexServiceImpl implements ComplexService {
     }
 
     @Override
+    public List<ComplexResponse> search(String search) {
+
+        
+        return null;
+    }
+
+    @Override
     public List<ComplexResponse> findAllByUserId(Long userId) {
-        if (complexRepository.findAllByUserId(userId).size() == 0){
-            throw new NotFoundException("not found",HttpStatus.BAD_REQUEST);
+        if (complexRepository.findAllByUserId(userId).size() == 0) {
+            throw new NotFoundException("user not have any post", HttpStatus.BAD_REQUEST);
         }
 
         return complexRepository.findAllByUserId(userId).stream()
+                .filter(complex -> complex.getDeletedBy() == null)
                 .map(complex -> ComplexResponse.builder()
                         .id(complex.getId())
                         .averagePrice(complex.getAveragePrice())
@@ -127,6 +152,27 @@ public class ComplexServiceImpl implements ComplexService {
                         .fileResponses(getAllFile(complex.getId()))
                         .locationResponse(locationMapper.toLocationResponse(complex.getLocation()))
                         .build()).collect(Collectors.toList());
+    }
+
+    @Override
+    public ComplexResponse update(ComplexForUpdateRequest complexRequest) {
+        Complex complex = complexRepository.findById(complexRequest.getComplexId()).orElseThrow(() -> new NotFoundException("complex not found",HttpStatus.BAD_REQUEST));
+        complex.setComplexName(complexRequest.getNameComplex());
+        complex.setTypeComplex(complexRequest.getTypeComplex());
+        complex.setAveragePrice(complexRequest.getAveragePrice());
+        complex.setContactInfo(contactInfoService.update(complexRequest.getContactInfoRequest()));
+        complex.setLocation(locationService.update(complexRequest.getLocationRequest()));
+
+        complexRepository.save(complex);
+        return ComplexResponse.builder()
+                .id(complex.getId())
+                .averagePrice(complex.getAveragePrice())
+                .name(complex.getComplexName())
+                .userId(complex.getUser().getId())
+                .contactInfoResponse(ContactInfoMapper.INSTANCE.toContactResponse(complex.getContactInfo()))
+                .fileResponses(getAllFile(complex.getId()))
+                .locationResponse(locationMapper.toLocationResponse(complex.getLocation()))
+                .build();
     }
 
 }

@@ -15,6 +15,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 @Service
@@ -47,12 +49,12 @@ public class FileComplexServiceImpl implements FileComplexService {
     }
 
     @Override
-    public FileResponse findById(Long id) {
+    public FileResponse findById(Long id){
         return fileService.findById(id);
     }
 
     @Override
-    public Boolean delete(Long id) {
+    public FileResponse delete(Long id) {
         return null;
     }
 }

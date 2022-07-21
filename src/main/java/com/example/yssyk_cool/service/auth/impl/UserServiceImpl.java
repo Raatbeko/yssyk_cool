@@ -137,7 +137,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean delete(Long id) {
+    public UserResponse delete(Long id) {
         return null;
     }
 

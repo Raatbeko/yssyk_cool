@@ -1,5 +1,7 @@
 package com.example.yssyk_cool.service.impl;
 
+import com.example.yssyk_cool.dto.complex.request.ComplexForUpdateRequest;
+import com.example.yssyk_cool.dto.contactInfo.request.ContactInfoForUpdateRequest;
 import com.example.yssyk_cool.dto.contactInfo.request.ContactInfoRequest;
 import com.example.yssyk_cool.entity.ContactInfo;
 import com.example.yssyk_cool.exception.NotFoundException;
@@ -22,7 +24,7 @@ public class ContactInfoServiceImpl implements ContactInfoService {
 
     @Override
     public ContactInfo save(ContactInfoRequest t) {
-        return  contactInfoRepository.save(ContactInfo.builder()
+        return contactInfoRepository.save(ContactInfo.builder()
                 .email(t.getEmail())
                 .phoneNumber(t.getPhoneNumber())
                 .telegramAccountName(t.getTelegramAccountName())
@@ -36,11 +38,20 @@ public class ContactInfoServiceImpl implements ContactInfoService {
 
     @Override
     public ContactInfo findById(Long id) {
-        return contactInfoRepository.findById(id).orElseThrow(()-> new NotFoundException("Not found", HttpStatus.NOT_FOUND));
+        return contactInfoRepository.findById(id).orElseThrow(() -> new NotFoundException("Not found", HttpStatus.NOT_FOUND));
     }
 
     @Override
-    public Boolean delete(Long id) {
+    public ContactInfo delete(Long id) {
         return null;
+    }
+
+    @Override
+    public ContactInfo update(ContactInfoForUpdateRequest contactInfoRequest) {
+        ContactInfo contactInfo = findById(contactInfoRequest.getContactInfoId());
+        contactInfo.setEmail(contactInfoRequest.getEmail());
+        contactInfo.setPhoneNumber(contactInfoRequest.getPhoneNumber());
+        contactInfo.setTelegramAccountName(contactInfoRequest.getTelegramAccountName());
+        return contactInfoRepository.save(contactInfo);
     }
 }

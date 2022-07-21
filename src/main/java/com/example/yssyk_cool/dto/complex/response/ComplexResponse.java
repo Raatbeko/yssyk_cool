@@ -4,6 +4,7 @@ import com.example.yssyk_cool.dto.contactInfo.response.ContactInfoResponse;
 import com.example.yssyk_cool.dto.file.response.FileResponse;
 import com.example.yssyk_cool.dto.location.response.LocationResponse;
 import com.example.yssyk_cool.entity.Location;
+import com.example.yssyk_cool.enums.TypeComplex;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -22,6 +23,8 @@ public class ComplexResponse {
 
     String name;
 
+    TypeComplex typeComplex;
+
     List<FileResponse> fileResponses;
 
     LocationResponse locationResponse;
@@ -29,4 +32,6 @@ public class ComplexResponse {
     ContactInfoResponse contactInfoResponse;
 
     String averagePrice;
+
+    boolean deleted ;
 }

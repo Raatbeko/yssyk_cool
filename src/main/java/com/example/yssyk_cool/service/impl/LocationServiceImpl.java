@@ -1,5 +1,6 @@
 package com.example.yssyk_cool.service.impl;
 
+import com.example.yssyk_cool.dto.location.request.LocationForUpdateRequest;
 import com.example.yssyk_cool.dto.location.request.LocationRequest;
 import com.example.yssyk_cool.entity.Location;
 import com.example.yssyk_cool.exception.NotFoundException;
@@ -22,7 +23,7 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public Location save(LocationRequest t) {
-        return  locationRepository.save(Location.builder()
+        return locationRepository.save(Location.builder()
                 .area(commonReferenceService.getByTitle(t.getArea()))
                 .city(commonReferenceService.getByTitle(t.getCity()))
                 .streetName(t.getStreetName())
@@ -41,7 +42,17 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public Boolean delete(Long id) {
+    public Location delete(Long id) {
         return null;
+    }
+
+    @Override
+    public Location update(LocationForUpdateRequest locationForUpdateRequest) {
+        Location location = findById(locationForUpdateRequest.getLocationId());
+        location.setArea(commonReferenceService.getByTitle(locationForUpdateRequest.getArea()));
+        location.setCity(commonReferenceService.getByTitle(locationForUpdateRequest.getCity()));
+        location.setStreetName(locationForUpdateRequest.getStreetName());
+        location.setUrlGoogleMap(locationForUpdateRequest.getUrlGoogleMap());
+        return locationRepository.save(location);
     }
 }
