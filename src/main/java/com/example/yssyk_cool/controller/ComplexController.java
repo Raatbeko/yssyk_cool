@@ -3,6 +3,7 @@ package com.example.yssyk_cool.controller;
 import com.example.yssyk_cool.dto.complex.request.ComplexForUpdateRequest;
 import com.example.yssyk_cool.dto.complex.request.ComplexRequest;
 import com.example.yssyk_cool.dto.complex.response.ComplexResponse;
+import com.example.yssyk_cool.model.SearchModel;
 import com.example.yssyk_cool.service.ComplexService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -48,10 +49,10 @@ public class ComplexController {
         return complexService.findAllByUserId(id);
     }
 
-    @GetMapping("/search/{search}")
+    @GetMapping("/search")
     @ApiOperation("Поиск")
-    public List<ComplexResponse> search(@PathVariable String search) {
-        return complexService.search(search);
+    public List<ComplexResponse> search(@RequestBody SearchModel searchModel) {
+        return complexService.search(searchModel);
     }
 
     @DeleteMapping("/delete/{id}")

@@ -63,6 +63,8 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"/api/complex").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/complex/get-by-user-id/{id}").hasRole(SecurityRole.ROLE_PROVIDER.getName())
                 .antMatchers(HttpMethod.POST,"/api/complex/save").hasAnyRole(SecurityRole.ROLE_USER .getName(),SecurityRole.ROLE_PROVIDER.getName())
+                .antMatchers(HttpMethod.PUT,"/api/complex/update").hasAnyRole(SecurityRole.ROLE_PROVIDER.getName())
+                .antMatchers(HttpMethod.DELETE,"/api/complex/delete/{id}").hasAnyRole(SecurityRole.ROLE_PROVIDER.getName())
 
                 .antMatchers(HttpMethod.GET,"/api/file/get-by-complex-id").permitAll()
                 .antMatchers(HttpMethod.POST,"/api/file/save").hasRole(SecurityRole.ROLE_PROVIDER.getName())

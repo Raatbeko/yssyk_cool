@@ -7,6 +7,8 @@ import com.example.yssyk_cool.dto.file.response.FileResponse;
 import com.example.yssyk_cool.entity.Complex;
 import com.example.yssyk_cool.entity.FileMulti;
 import com.example.yssyk_cool.entity.User;
+import com.example.yssyk_cool.model.CategoryModel;
+import com.example.yssyk_cool.model.SearchModel;
 
 import java.util.List;
 
@@ -19,5 +21,7 @@ public interface ComplexService extends BaseService<ComplexResponse, ComplexRequ
 
     List<FileResponse> getAllFile(Long complexId);
 
-    List<ComplexResponse> search(String search);
+    List<ComplexResponse> search(SearchModel searchModel);
+
+    List<CategoryModel> getComplexInCity();
 }
