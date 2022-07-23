@@ -38,4 +38,9 @@ public class CommonReferenceController {
         return commonReferenceService.getAreas();
     }
 
+    @GetMapping("/get-type-complex")
+    @ApiOperation("Получить типы комлексов")
+    public List<CommonResponse> getTypeComplex(){
+        return commonReferenceService.getTypeComplex();
+    }
 }

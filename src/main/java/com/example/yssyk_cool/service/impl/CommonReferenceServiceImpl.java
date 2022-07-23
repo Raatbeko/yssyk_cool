@@ -37,4 +37,9 @@ public class CommonReferenceServiceImpl implements CommonReferenceService {
     public CommonReference getByCode(Long code) {
         return null;
     }
+
+    @Override
+    public List<CommonResponse> getTypeComplex() {
+        return CommonReferenceMapper.INSTANCE.toResponse(commonReferenceRepository.findAllByTypeCode(3L));
+    }
 }

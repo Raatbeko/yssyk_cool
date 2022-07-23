@@ -15,4 +15,6 @@ public interface CommonReferenceService {
     CommonReference getByTitle(String title);
 
     CommonReference getByCode(Long code);
+
+    List<CommonResponse> getTypeComplex();
 }
