@@ -1,28 +1,20 @@
 package com.example.yssyk_cool.service.impl;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import com.example.yssyk_cool.dto.file.request.FileComplexRequest;
 import com.example.yssyk_cool.dto.file.response.FileResponse;
-import com.example.yssyk_cool.entity.FileComplex;
 import com.example.yssyk_cool.entity.FileMulti;
 import com.example.yssyk_cool.exception.FileNotFoundException;
-import com.example.yssyk_cool.exception.NotFoundException;
 import com.example.yssyk_cool.exception.StorageException;
-import com.example.yssyk_cool.repository.FileComplexRepository;
 import com.example.yssyk_cool.repository.FileRepository;
 import com.example.yssyk_cool.service.FileService;
-import com.example.yssyk_cool.util.FileType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -31,8 +23,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.nio.file.Path.*;
 
 
 @Service
@@ -132,9 +122,14 @@ public class FileServiceImpl implements FileService {
 
     public Resource load(Long id) throws StorageException {
         FileMulti fileEntity = fileRepository.findById(id).orElseThrow(() -> new FileNotFoundException("file not found", HttpStatus.BAD_REQUEST));
+        try {
+            Path filePath = Path.of(fileEntity.getPath());
 
-            return null;
+            return new UrlResource(filePath.toUri());
 
+        } catch (MalformedURLException e) {
+            throw new StorageException("Файл не найден: " + fileEntity.getPath(), e);
+        }
     }
 
     @Override

@@ -15,7 +15,7 @@ import com.example.yssyk_cool.repository.RoleRepository;
 import com.example.yssyk_cool.repository.UserRepository;
 import com.example.yssyk_cool.repository.UserRoleRepository;
 import com.example.yssyk_cool.service.auth.UserService;
-import com.example.yssyk_cool.util.SecurityRole;
+import com.example.yssyk_cool.enums.SecurityRole;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

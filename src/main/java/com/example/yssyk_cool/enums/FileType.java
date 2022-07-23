@@ -1,4 +1,4 @@
-package com.example.yssyk_cool.util;
+package com.example.yssyk_cool.enums;
 
 public enum FileType {
     IMG,

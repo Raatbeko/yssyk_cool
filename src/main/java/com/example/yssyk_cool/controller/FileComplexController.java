@@ -49,15 +49,15 @@ public class FileComplexController {
 
     @GetMapping("/get-by-complex-id/{id}")
     @ApiOperation("Получить все фотки комплекса по его id")
-    public List<FileResponse> getByComplexId(@PathVariable Long id) {
+    public List<FileResponse> getAllByComplexId(@PathVariable Long id) {
         return complexService.getAllFile(id);
 
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<InputStreamResource> get(@PathVariable Long id) throws StorageException, IOException {
+    public ResponseEntity<InputStreamResource> getByComplexId(@PathVariable Long id) throws StorageException, IOException {
 
-        InputStreamResource inputStreamResource = new InputStreamResource(service.load(id).getInputStream());
+        InputStreamResource inputStreamResource = new InputStreamResource(fileService.load(id).getInputStream());
 
         return ResponseEntity
                 .ok()

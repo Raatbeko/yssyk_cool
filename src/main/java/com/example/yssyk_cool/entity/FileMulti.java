@@ -1,6 +1,6 @@
 package com.example.yssyk_cool.entity;
 
-import com.example.yssyk_cool.util.FileType;
+import com.example.yssyk_cool.enums.FileType;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

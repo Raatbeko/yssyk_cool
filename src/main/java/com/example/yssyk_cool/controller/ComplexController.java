@@ -3,6 +3,7 @@ package com.example.yssyk_cool.controller;
 import com.example.yssyk_cool.dto.complex.request.ComplexForUpdateRequest;
 import com.example.yssyk_cool.dto.complex.request.ComplexRequest;
 import com.example.yssyk_cool.dto.complex.response.ComplexResponse;
+import com.example.yssyk_cool.model.CategoryModel;
 import com.example.yssyk_cool.model.SearchModel;
 import com.example.yssyk_cool.service.ComplexService;
 import io.swagger.annotations.Api;
@@ -65,6 +66,12 @@ public class ComplexController {
     @ApiOperation("Обновить комплекс")
     public ComplexResponse update(@RequestBody ComplexForUpdateRequest complexRequest){
         return complexService.update(complexRequest);
+    }
+
+    @GetMapping("/get-all-complex-in-cities")
+    @ApiOperation("Получить всех комплексов по городам")
+    public List<CategoryModel> getAllComplexInCities(){
+        return complexService.getComplexInCity();
     }
 }
 
