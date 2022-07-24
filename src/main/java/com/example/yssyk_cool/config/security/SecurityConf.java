@@ -2,6 +2,7 @@ package com.example.yssyk_cool.config.security;
 
 import com.example.yssyk_cool.enums.SecurityRole;
 import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,27 +18,24 @@ import javax.sql.DataSource;
 
 @Configuration
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class SecurityConf extends WebSecurityConfigurerAdapter {
 
     final DataSource dataSource;
-
-    public SecurityConf(DataSource dataSource)     {
-        this.dataSource = dataSource;
-    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth)throws Exception{
         auth.jdbcAuthentication()
                 .dataSource(dataSource)
-                .usersByUsernameQuery("SELECT t.user_name, t.password, t.is_active FROM users t WHERE t.user_name = ?")
+                .usersByUsernameQuery("SELECT t.user_name, t.password FROM users t WHERE t.user_name = ?")
                 .authoritiesByUsernameQuery(
-                        "SELECT u.user_name, ur.name_role" +
-                                "FROM user_role ur" +
+                        "SELECT u.user_name, r.name_role" +
+                                "FROM user_roles ur" +
                                 "INNER JOIN users u " +
                                 "on ur.user_id = u.id" +
                                 "INNER JOIN roles r" +
                                 "on ur.role_id = r.id" +
-                                "WHERE u.user_name = ? AND u.is_active = 1");
+                                "WHERE u.user_name = ? ");
     }
 
     @Override
@@ -54,9 +52,6 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/v1/user/register").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/v1/user/{id}").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/v1/user").permitAll()
-
-                .antMatchers(HttpMethod.GET,"/api/common-reference/get-cities").permitAll()
-                .antMatchers(HttpMethod.GET,"/api/common-reference/get-areas").permitAll()
 
                 .antMatchers(HttpMethod.GET,"/api/complex/{id}").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/complex").permitAll()

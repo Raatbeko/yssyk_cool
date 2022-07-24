@@ -12,7 +12,4 @@ public interface ComplexRepository extends JpaRepository<Complex,Long>{
 
     List<Complex> findAllByUserId(Long id);
 
-    List<Complex> findByLocationCityTitle(String title);
-
-    List<Complex> findByLocationAreaTitle(String title);
 }

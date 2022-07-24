@@ -83,6 +83,7 @@ public class UserServiceImpl implements UserService {
             String token = "Basic " + new String(Base64.getEncoder()
                     .encode((userEntity.getLogin() + ":" + request.getPassword()).getBytes()));
             return UserTokenResponse.builder()
+                    .userId(userEntity.getId())
                     .userToken(token).build();
         } else {
             throw new UserSignInException("Неправильный логин или пароль!", HttpStatus.NOT_FOUND);

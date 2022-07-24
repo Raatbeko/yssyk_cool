@@ -1,5 +1,5 @@
 CREATE TABLE roles (
-                       id bigserial NOT NULL,
+                       id bigint NOT NULL,
                        create_time timestamp NOT NULL,
                        update_time timestamp NULL,
                        name_role varchar(255) NOT NULL,
@@ -28,37 +28,7 @@ CREATE TABLE user_roles (
                             CONSTRAINT fkh8ciramu9cc9q3qcqiv4ue8a6 FOREIGN KEY (role_id) REFERENCES roles(id),
                             CONSTRAINT fkhfh9dx7w3ubf1co1vdev94g3f FOREIGN KEY (user_id) REFERENCES users(id)
 );
-CREATE TABLE common_reference_type (
-                                       id bigserial NOT NULL,
-                                       create_time timestamp NOT NULL,
-                                       update_time timestamp NULL,
-                                       code_type int8 NULL,
-                                       title varchar(255) NULL,
-                                       CONSTRAINT common_reference_type_pkey PRIMARY KEY (id)
-);
-CREATE TABLE common_reference (
-                                  id bigserial NOT NULL,
-                                  create_time timestamp NOT NULL,
-                                  update_time timestamp NULL,
-                                  code_type int8 NULL,
-                                  title varchar(255) NOT NULL,
-                                  type_id int8 NULL,
-                                  CONSTRAINT common_reference_pkey PRIMARY KEY (id),
-                                  CONSTRAINT uk_33m5lx8b84rmuribxhknkkfo UNIQUE (title),
-                                  CONSTRAINT fkkw831yyjhqulf1qwyndlme41u FOREIGN KEY (type_id) REFERENCES common_reference_type(id)
-);
-CREATE TABLE locations (
-                           id bigserial NOT NULL,
-                           create_time timestamp NOT NULL,
-                           update_time timestamp NULL,
-                           street_name varchar(255) NULL,
-                           url_google_map varchar(255) NULL,
-                           area_id int8 NULL,
-                           city_id int8 NOT NULL,
-                           CONSTRAINT locations_pkey PRIMARY KEY (id),
-                           CONSTRAINT fkmb1rru8yodl83ngwflnvsj01d FOREIGN KEY (area_id) REFERENCES common_reference(id),
-                           CONSTRAINT fkteslq4werhfmc9on4sx4sssmu FOREIGN KEY (city_id) REFERENCES common_reference(id)
-);
+
 CREATE TABLE files (
                        id bigserial NOT NULL,
                        create_time timestamp NOT NULL,
@@ -81,16 +51,13 @@ CREATE TABLE complexes (
                            id bigserial NOT NULL,
                            create_time timestamp NOT NULL,
                            update_time timestamp NULL,
-                           average_price varchar(255) NULL,
+                           complex_name varchar(255) NOT NULL,
+                           about_complex text NULL,
                            created_by int8 NULL,
                            deleted_at timestamp without time zone,
                            deleted_by bigint references users (id),
-                           complex_name varchar(255) NOT NULL,
                            contact_info_id int8 NOT NULL,
-                           location_id int8 NOT NULL,
-                           types varchar NOT NULL ,
                            CONSTRAINT complexes_pkey PRIMARY KEY (id),
-                           CONSTRAINT fkfgs7ya5svr9gjduf724utgns8 FOREIGN KEY (location_id) REFERENCES locations(id),
                            CONSTRAINT fklhsc6ddk4to49jmmwfqimp9m7 FOREIGN KEY (created_by) REFERENCES users(id),
                            CONSTRAINT fkmtcab2yb8jg0m3rkeafqv4w04 FOREIGN KEY (contact_info_id) REFERENCES contact_info(id)
 );

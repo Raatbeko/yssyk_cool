@@ -9,5 +9,8 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserTokenResponse {
+
+    Long userId;
+    
     String userToken;
 }

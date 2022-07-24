@@ -1,5 +1,7 @@
-insert into roles(name_role,create_time)
+insert into roles(id,name_role,create_time)
 values
-    ('ROLE_ADMIN',now()),
-    ('ROLE_USER',now()),
-    ('ROLE_PROVIDER',now());
+    (1,'ROLE_ADMIN',now()),
+    (2,'ROLE_USER',now()),
+    (3,'ROLE_PROVIDER',now());
+
+

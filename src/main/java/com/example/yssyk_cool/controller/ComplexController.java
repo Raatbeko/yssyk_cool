@@ -68,10 +68,5 @@ public class ComplexController {
         return complexService.update(complexRequest);
     }
 
-    @GetMapping("/get-all-complex-in-cities")
-    @ApiOperation("Получить всех комплексов по городам")
-    public List<CategoryModel> getAllComplexInCities(){
-        return complexService.getComplexInCity();
-    }
 }
 

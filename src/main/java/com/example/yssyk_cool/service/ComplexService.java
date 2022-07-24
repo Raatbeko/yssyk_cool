@@ -23,5 +23,4 @@ public interface ComplexService extends BaseService<ComplexResponse, ComplexRequ
 
     List<ComplexResponse> search(SearchModel searchModel);
 
-    List<CategoryModel> getComplexInCity();
 }
