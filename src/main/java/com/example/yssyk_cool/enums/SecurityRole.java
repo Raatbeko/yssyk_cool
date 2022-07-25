@@ -13,7 +13,7 @@ public enum SecurityRole {
     }
 
 
-    public String getName() {
+    public String getNameRole() {
         return name;
     }
 }
