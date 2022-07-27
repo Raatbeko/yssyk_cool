@@ -16,15 +16,12 @@ public class ComplexForUpdateRequest {
 
     Long complexId;
 
-
     @NotNull
     String nameComplex;
 
     String aboutComplex;
 
     String averagePrice;
-
-    TypeComplex typeComplex;
 
     ContactInfoForUpdateRequest contactInfoRequest;
 }

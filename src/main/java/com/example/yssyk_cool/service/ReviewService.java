@@ -10,5 +10,4 @@ import java.util.List;
 public interface ReviewService extends BaseService<ReviewResponse, ReviewRequest>{
     List<ReviewResponse> getAllByComplexId(Complex complex);
 
-    ReviewResponse getByComplexId(Complex complex);
 }

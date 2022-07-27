@@ -39,8 +39,11 @@ public class ReviewServiceImpl implements ReviewService {
                 .review(t.getReview())
                 .grade(t.getGrade())
                 .user(userRepository.findById(t.getUserId()).orElseThrow(() -> new NotFoundException("not found user", HttpStatus.NOT_FOUND)))
-                .complexId(complexRepository.findById(t.getComplexId()).orElseThrow(() -> new NotFoundException("complex not found", HttpStatus.BAD_REQUEST)))
                 .build());
+
+        Complex complex = complexRepository.findById(t.getComplexId()).orElseThrow();
+        complex.getReviews().add(review);
+        complexRepository.save(complex);
 
         return ReviewMapper.INSTANCE.toReviewResponse(review);
     }
@@ -54,11 +57,6 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ReviewResponse getByComplexId(Complex complex) {
-        return ReviewMapper.INSTANCE.toReviewResponse(reviewRepository.findByComplexId(complex));
-    }
-
-    @Override
     public List<ReviewResponse> getAll() {
         return ReviewMapper.INSTANCE.toReviewResponse(reviewRepository.findAll());
     }
@@ -66,7 +64,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public List<ReviewResponse> getAllByComplexId(Complex complex) {
 
-        return reviewRepository.findAllByComplexId(complex).stream()
+        return complex.getReviews().stream()
                 .filter(review -> review.getDeletedAt() == null)
                 .map(review -> ReviewResponse.builder()
                         .id(review.getId())

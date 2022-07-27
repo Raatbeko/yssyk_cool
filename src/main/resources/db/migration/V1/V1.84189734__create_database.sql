@@ -86,3 +86,9 @@ CREATE TABLE file_complexes (
                                 CONSTRAINT fk6q149sjr7pw8dqrqmcl6wsepd FOREIGN KEY (file_id) REFERENCES files(id),
                                 CONSTRAINT fk98ajl7pm083gfirfpkkka3hlx FOREIGN KEY (complex_id) REFERENCES complexes(id)
 );
+CREATE TABLE complexes_reviews (
+                                          complex_id int8 NOT NULL,
+                                          reviews_id int8 NOT NULL,
+                                          CONSTRAINT fkgbem52cfqubl2brwgig8q370l FOREIGN KEY (reviews_id) REFERENCES reviews(id),
+                                          CONSTRAINT fkj38p8c77g5vndetkd0uq27hak FOREIGN KEY (complex_id) REFERENCES complexes(id)
+);

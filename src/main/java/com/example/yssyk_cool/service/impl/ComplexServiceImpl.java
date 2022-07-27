@@ -99,7 +99,6 @@ public class ComplexServiceImpl implements ComplexService {
     public ComplexResponse update(ComplexForUpdateRequest complexRequest) {
         Complex complex = complexRepository.findById(complexRequest.getComplexId()).orElseThrow(() -> new NotFoundException("complex not found",HttpStatus.BAD_REQUEST));
         complex.setComplexName(complexRequest.getNameComplex());
-        complex.setTypeComplex(complexRequest.getTypeComplex());
         complex.setContactInfo(contactInfoService.update(complexRequest.getContactInfoRequest()));
 
         complexRepository.save(complex);
