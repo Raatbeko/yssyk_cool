@@ -20,7 +20,7 @@ public class ComplexRequest {
 
     String aboutComplex;
 
-    String googleUrl;
+    String mapUrl;
 
     ContactInfoRequest contactInfoRequest;
 

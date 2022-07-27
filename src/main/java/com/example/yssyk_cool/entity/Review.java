@@ -5,6 +5,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "reviews")
@@ -29,5 +30,13 @@ public class Review extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "complex_id")
     Complex complexId;
+
+    @OneToOne
+    @JoinColumn(name = "deleted_by")
+    User deletedBy;
+
+    @Column(name = "deleted_at")
+    LocalDateTime deletedAt;
+
 
 }

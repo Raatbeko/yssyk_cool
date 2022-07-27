@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -27,10 +28,24 @@ public class ComplexController {
 
     final ComplexService complexService;
 
-    @PostMapping("/save")
+    @GetMapping("/search")
+    @ApiOperation("Поиск")
+    public List<ComplexResponse> search(@RequestBody SearchModel searchModel) {
+        return complexService.search(searchModel);
+    }
+
+    @PostMapping
     @ApiOperation("Сохранение комплекса")
-    public ComplexResponse save(@RequestBody ComplexRequest complexRequest) throws FileNotFoundException {
-        return complexService.save(complexRequest);
+    public ComplexResponse save(@RequestBody ComplexRequest complexRequest,
+                                @RequestPart(value = "attachments", required = false) MultipartFile[] attachments
+    ) throws FileNotFoundException {
+        return complexService.save(complexRequest,attachments);
+    }
+
+    @PutMapping
+    @ApiOperation("Обновить комплекс")
+    public ComplexResponse update(@RequestBody ComplexForUpdateRequest complexRequest){
+        return complexService.update(complexRequest);
     }
 
     @GetMapping("/{id}")
@@ -38,6 +53,7 @@ public class ComplexController {
     public ComplexResponse getById(@PathVariable Long id) throws FileNotFoundException {
         return complexService.findById(id);
     }
+
     @GetMapping
     @ApiOperation("Получить все комплексы")
     public List<ComplexResponse> getAll() {
@@ -50,23 +66,13 @@ public class ComplexController {
         return complexService.findAllByUserId(id);
     }
 
-    @GetMapping("/search")
-    @ApiOperation("Поиск")
-    public List<ComplexResponse> search(@RequestBody SearchModel searchModel) {
-        return complexService.search(searchModel);
-    }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     @ApiOperation("Удалить комплек по id")
     public ComplexResponse delete(@PathVariable("id")Long id){
         return complexService.delete(id);
     }
 
-    @PutMapping("/update")
-    @ApiOperation("Обновить комплекс")
-    public ComplexResponse update(@RequestBody ComplexForUpdateRequest complexRequest){
-        return complexService.update(complexRequest);
-    }
 
 }
 

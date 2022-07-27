@@ -32,8 +32,12 @@ public class ContactInfoServiceImpl implements ContactInfoService {
     }
 
     @Override
-    public List<ContactInfo> getAll() {
-        return contactInfoRepository.findAll();
+    public ContactInfo update(ContactInfoForUpdateRequest contactInfoRequest) {
+        ContactInfo contactInfo = findById(contactInfoRequest.getContactInfoId());
+        contactInfo.setEmail(contactInfoRequest.getEmail());
+        contactInfo.setPhoneNumber(contactInfoRequest.getPhoneNumber());
+        contactInfo.setTelegramAccountName(contactInfoRequest.getTelegramAccountName());
+        return contactInfoRepository.save(contactInfo);
     }
 
     @Override
@@ -42,16 +46,14 @@ public class ContactInfoServiceImpl implements ContactInfoService {
     }
 
     @Override
+    public List<ContactInfo> getAll() {
+        return contactInfoRepository.findAll();
+    }
+
+
+    @Override
     public ContactInfo delete(Long id) {
         return null;
     }
 
-    @Override
-    public ContactInfo update(ContactInfoForUpdateRequest contactInfoRequest) {
-        ContactInfo contactInfo = findById(contactInfoRequest.getContactInfoId());
-        contactInfo.setEmail(contactInfoRequest.getEmail());
-        contactInfo.setPhoneNumber(contactInfoRequest.getPhoneNumber());
-        contactInfo.setTelegramAccountName(contactInfoRequest.getTelegramAccountName());
-        return contactInfoRepository.save(contactInfo);
-    }
 }

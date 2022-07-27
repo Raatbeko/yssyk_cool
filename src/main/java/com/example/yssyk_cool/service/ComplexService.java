@@ -9,6 +9,7 @@ import com.example.yssyk_cool.entity.FileMulti;
 import com.example.yssyk_cool.entity.User;
 import com.example.yssyk_cool.model.CategoryModel;
 import com.example.yssyk_cool.model.SearchModel;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -16,11 +17,11 @@ public interface ComplexService extends BaseService<ComplexResponse, ComplexRequ
 
     List<ComplexResponse> findAllByUserId(Long userId);
 
-
     ComplexResponse update(ComplexForUpdateRequest complexRequest);
 
     List<FileResponse> getAllFile(Long complexId);
 
     List<ComplexResponse> search(SearchModel searchModel);
 
+    ComplexResponse save(ComplexRequest complexRequest, MultipartFile[] attachments);
 }

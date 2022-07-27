@@ -9,6 +9,7 @@ import com.example.yssyk_cool.entity.User;
 import com.example.yssyk_cool.entity.UserRole;
 import com.example.yssyk_cool.exception.EmailNotBeEmptyException;
 import com.example.yssyk_cool.exception.NotFoundException;
+import com.example.yssyk_cool.exception.UserNotActiveException;
 import com.example.yssyk_cool.exception.UserSignInException;
 import com.example.yssyk_cool.mapper.UserMapper;
 import com.example.yssyk_cool.repository.RoleRepository;
@@ -70,15 +71,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserTokenResponse getToken(UserAuthRequest request) {
-//      User userEntity = userRepository.findByUserNameAndEMail(request.getLoginOrEmail());
+
         User userEntity = userRepository.findByEmail(request.getLoginOrEmail());
         boolean isMatches;
-        if (userEntity != null){
-            isMatches = passwordEncoder.matches(request.getPassword(), userEntity.getPassword());
-        }else {
+
+        if (userEntity == null) {
             userEntity = userRepository.findByLogin(request.getLoginOrEmail());
-            isMatches = passwordEncoder.matches(request.getPassword(),userEntity.getPassword());
         }
+
+        isMatches = passwordEncoder.matches(request.getPassword(), userEntity.getPassword());
+
+        if (!userEntity.getIsActive()) throw new UserNotActiveException("Пользователь заблокирован", HttpStatus.BAD_REQUEST);
+
         if (isMatches) {
             String token = "Basic " + new String(Base64.getEncoder()
                     .encode((userEntity.getLogin() + ":" + request.getPassword()).getBytes()));
@@ -114,6 +118,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private void checkToHave(String login, String email){
+
         User user = userRepository.findByLogin(login);
         if (user != null){
             throw new UserSignInException("Такой login уже сушествует!",HttpStatus.BAD_REQUEST);
@@ -123,6 +128,7 @@ public class UserServiceImpl implements UserService {
         if (user != null){
             throw new UserSignInException("Такой email уже сушествует!",HttpStatus.BAD_REQUEST);
         }
+
     }
 
 

@@ -15,12 +15,15 @@ import com.example.yssyk_cool.repository.FileComplexRepository;
 import com.example.yssyk_cool.repository.UserRepository;
 import com.example.yssyk_cool.service.ComplexService;
 import com.example.yssyk_cool.service.ContactInfoService;
+import com.example.yssyk_cool.service.FileComplexService;
+import com.example.yssyk_cool.service.FileService;
 import com.example.yssyk_cool.service.auth.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -42,8 +45,23 @@ public class ComplexServiceImpl implements ComplexService {
 
     final UserService userService;
 
+    final FileComplexService fileService;
+
+    @Override
+    public ComplexResponse save(
+            ComplexRequest complexRequest,
+            MultipartFile[] attachments
+    ) {
+
+        ComplexResponse complexResponse = save(complexRequest);
+        complexResponse.setFileResponses(fileService.save(complexResponse.getId(), attachments));
+
+    return complexResponse;
+    }
+
     @Override
     public ComplexResponse save(ComplexRequest t) {
+
         Complex complex = complexRepository.save(Complex.builder()
                 .complexName(t.getNameComplex())
                 .contactInfo(contactInfoService.save(t.getContactInfoRequest()))
@@ -60,92 +78,6 @@ public class ComplexServiceImpl implements ComplexService {
                 ).build();
 
     }
-
-    @Override
-    public List<ComplexResponse> getAll() {
-
-        return complexRepository.findAll().stream()
-                .filter(complex -> complex.getDeletedBy() == null)
-                .map(complex ->
-                        ComplexResponse.builder()
-                                .id(complex.getId())
-                                .name(complex.getComplexName())
-                                .userId(complex.getUser().getId())
-                                .contactInfoResponse(ContactInfoMapper.INSTANCE.toContactResponse(complex.getContactInfo()))
-                                .fileResponses(getAllFile(complex.getId())
-                                ).build()).collect(Collectors.toList());
-    }
-
-    @Override
-    public ComplexResponse findById(Long id) {
-        Complex complex = complexRepository
-                .findById(id)
-                .orElseThrow(() -> new NotFoundException("Not found", HttpStatus.BAD_REQUEST));
-        if (complex.getDeletedBy() == null)
-            return ComplexResponse.builder()
-                    .id(complex.getId())
-                    .name(complex.getComplexName())
-                    .userId(complex.getUser().getId())
-                    .contactInfoResponse(ContactInfoMapper.INSTANCE.toContactResponse(complex.getContactInfo()))
-                    .fileResponses(getAllFile(complex.getId())
-                    ).build();
-        throw new NotFoundException("its complex was deleted", HttpStatus.BAD_REQUEST);
-    }
-
-    @Override
-    public ComplexResponse delete(Long id) {
-        Complex complex = complexRepository.findById(id).orElseThrow(() -> new NotFoundException("Complex for delete not found", HttpStatus.BAD_REQUEST));
-        complex.setDeletedBy(complex.getUser());
-        complex.setDeletedAt(LocalDateTime.now());
-        return ComplexResponse.builder()
-                .id(complex.getId())
-                .name(complex.getComplexName())
-                .userId(complex.getUser().getId())
-                .contactInfoResponse(ContactInfoMapper.INSTANCE.toContactResponse(complex.getContactInfo()))
-                .fileResponses(getAllFile(complex.getId()))
-                .deleted(true).build();
-
-    }
-
-    public List<FileResponse> getAllFile(Long id) {
-        return fileComplex.findFileComplexByComplexesId(id).stream()
-                .map(file -> FileResponse.builder()
-                        .id(file.getFileMulti().getId())
-                        .url(file.getFileMulti().getUrl())
-                        .build()).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ComplexResponse> search(SearchModel searchModel) {
-
-        if (searchModel.getSearchType().equals(SearchType.BY_COMPLEX_NAME)){
-            return getComplexName(searchModel.getTitle());
-        }
-        return new ArrayList<>();
-    }
-
-    private List<ComplexResponse> getComplexName(String complexName){
-        List<Complex> complexes = complexRepository.findAll().stream().filter(complex -> complex.getComplexName().equalsIgnoreCase(complexName)).collect(Collectors.toList());
-        return toResponse(complexes);
-
-    }
-//    private List<ComplexResponse> getByArea(String title){
-//        List<Complex> complexes = complexRepository.findAll().stream()
-//                .filter(complex -> complex.getLocation().getArea().getTitle().equalsIgnoreCase(title)).collect(Collectors.toList());
-//
-//        return toResponse(complexes);
-//    }
-
-    private List<ComplexResponse> toResponse(List<Complex> complexes){
-        return complexes.stream().map(complex -> ComplexResponse.builder()
-                .id(complex.getId())
-                .name(complex.getComplexName())
-                .userId(complex.getUser().getId())
-                .contactInfoResponse(ContactInfoMapper.INSTANCE.toContactResponse(complex.getContactInfo()))
-                .fileResponses(getAllFile(complex.getId()))
-                .build()).collect(Collectors.toList());
-    }
-
     @Override
     public List<ComplexResponse> findAllByUserId(Long userId) {
         if (complexRepository.findAllByUserId(userId).size() == 0) {
@@ -178,6 +110,86 @@ public class ComplexServiceImpl implements ComplexService {
                 .contactInfoResponse(ContactInfoMapper.INSTANCE.toContactResponse(complex.getContactInfo()))
                 .fileResponses(getAllFile(complex.getId()))
                 .build();
+    }
+
+    @Override
+    public ComplexResponse findById(Long id) {
+        Complex complex = complexRepository
+                .findById(id)
+                .orElseThrow(() -> new NotFoundException("Not found", HttpStatus.BAD_REQUEST));
+        if (complex.getDeletedBy() == null)
+            return ComplexResponse.builder()
+                    .id(complex.getId())
+                    .name(complex.getComplexName())
+                    .userId(complex.getUser().getId())
+                    .contactInfoResponse(ContactInfoMapper.INSTANCE.toContactResponse(complex.getContactInfo()))
+                    .fileResponses(getAllFile(complex.getId())
+                    ).build();
+        throw new NotFoundException("its complex was deleted", HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    public List<ComplexResponse> getAll() {
+
+        return complexRepository.findAll().stream()
+                .filter(complex -> complex.getDeletedBy() == null)
+                .map(complex ->
+                        ComplexResponse.builder()
+                                .id(complex.getId())
+                                .name(complex.getComplexName())
+                                .userId(complex.getUser().getId())
+                                .contactInfoResponse(ContactInfoMapper.INSTANCE.toContactResponse(complex.getContactInfo()))
+                                .fileResponses(getAllFile(complex.getId())
+                                ).build()).collect(Collectors.toList());
+    }
+
+    public List<FileResponse> getAllFile(Long id) {
+        return fileComplex.findFileComplexByComplexesId(id).stream()
+                .map(file -> FileResponse.builder()
+                        .id(file.getFileMulti().getId())
+                        .url(file.getFileMulti().getUrl())
+                        .build()).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ComplexResponse> search(SearchModel searchModel) {
+
+        if (searchModel.getSearchType().equals(SearchType.BY_COMPLEX_NAME)){
+            return getComplexName(searchModel.getTitle());
+        }
+        return new ArrayList<>();
+    }
+
+
+    private List<ComplexResponse> getComplexName(String complexName){
+        List<Complex> complexes = complexRepository.findAll().stream().filter(complex -> complex.getComplexName().equalsIgnoreCase(complexName)).collect(Collectors.toList());
+        return toResponse(complexes);
+
+    }
+
+    private List<ComplexResponse> toResponse(List<Complex> complexes){
+        return complexes.stream().map(complex -> ComplexResponse.builder()
+                .id(complex.getId())
+                .name(complex.getComplexName())
+                .userId(complex.getUser().getId())
+                .contactInfoResponse(ContactInfoMapper.INSTANCE.toContactResponse(complex.getContactInfo()))
+                .fileResponses(getAllFile(complex.getId()))
+                .build()).collect(Collectors.toList());
+    }
+
+    @Override
+    public ComplexResponse delete(Long id) {
+        Complex complex = complexRepository.findById(id).orElseThrow(() -> new NotFoundException("Complex for delete not found", HttpStatus.BAD_REQUEST));
+        complex.setDeletedBy(complex.getUser());
+        complex.setDeletedAt(LocalDateTime.now());
+        return ComplexResponse.builder()
+                .id(complex.getId())
+                .name(complex.getComplexName())
+                .userId(complex.getUser().getId())
+                .contactInfoResponse(ContactInfoMapper.INSTANCE.toContactResponse(complex.getContactInfo()))
+                .fileResponses(getAllFile(complex.getId()))
+                .deleted(true).build();
+
     }
 
 }

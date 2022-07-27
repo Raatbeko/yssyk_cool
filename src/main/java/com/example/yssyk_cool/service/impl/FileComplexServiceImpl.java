@@ -16,7 +16,9 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,7 +38,7 @@ public class FileComplexServiceImpl implements FileComplexService {
 
     @Override
     public FileResponse save(FileComplexRequest t) {
-        FileResponse fileResponse = fileService.save(t);
+        FileResponse fileResponse = fileService.save(t.getMultipartFile());
         fileComplexRepository.save(FileComplex.builder()
                 .complexes(complexRepository.findById(t.getComplexId()).orElseThrow(()-> new NotFoundException("complex not found", HttpStatus.BAD_REQUEST)))
                 .fileMulti(fileRepository.findById(fileResponse.getId()).orElseThrow(()->new NotFoundException("file no found",HttpStatus.BAD_REQUEST)))
@@ -45,18 +47,18 @@ public class FileComplexServiceImpl implements FileComplexService {
     }
 
     @Override
-    public List<FileResponse> getAll() {
-        return fileService.getAll();
-    }
+    public List<FileResponse> save(Long complexId, MultipartFile[] attachments) {
+        List<FileResponse> fileResponses = new ArrayList<>();
 
-    @Override
-    public FileResponse findById(Long id){
-        return fileService.findById(id);
-    }
+        for (MultipartFile attachment : attachments) {
+            fileResponses.add(save(FileComplexRequest.builder()
+                    .complexId(complexId)
+                    .multipartFile(attachment)
+                    .build()));
+        }
 
-    @Override
-    public FileResponse delete(Long id) {
-        return null;
+        return fileResponses;
+
     }
 
     @Override
@@ -73,4 +75,20 @@ public class FileComplexServiceImpl implements FileComplexService {
 
         return  fileService.load(id);
     }
+
+    @Override
+    public FileResponse findById(Long id){
+        return fileService.findById(id);
+    }
+
+    @Override
+    public List<FileResponse> getAll() {
+        return fileService.getAll();
+    }
+
+    @Override
+    public FileResponse delete(Long id) {
+        return null;
+    }
+
 }

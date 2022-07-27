@@ -35,7 +35,7 @@ public class UserController {
         return userService.save(request);
     }
 
-    @PostMapping("/auto")
+    @PostMapping("/auth")
     @ApiOperation("Авторизация")
     public UserTokenResponse auto(@RequestBody UserAuthRequest request) {
         return userService.getToken(request);
