@@ -19,7 +19,9 @@ public class ComplexResponse {
 
     Long userId;
 
-    String name;
+    String complexName;
+
+    String aboutComplex;
 
     List<FileResponse> fileResponses;
 

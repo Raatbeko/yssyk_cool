@@ -20,8 +20,12 @@ import java.util.List;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Complex extends BaseEntity {
-    @Column(nullable = false)
+
+    @Column(name = "complex_name", nullable = false)
     String complexName;
+
+    @Column(name = "about_complex",nullable = false)
+    String aboutComplex;
 
     @ManyToOne
     @JoinColumn(name = "contact_info_id", nullable = false)

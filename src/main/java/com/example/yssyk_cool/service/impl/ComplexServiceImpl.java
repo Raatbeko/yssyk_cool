@@ -64,6 +64,7 @@ public class ComplexServiceImpl implements ComplexService {
 
         Complex complex = complexRepository.save(Complex.builder()
                 .complexName(t.getNameComplex())
+                .aboutComplex(t.getAboutComplex())
                 .contactInfo(contactInfoService.save(t.getContactInfoRequest()))
                 .user(userRepository.findById(t.getCreatedById()).orElseThrow(() -> new NotFoundException("user not found", HttpStatus.BAD_REQUEST))).build());
 
@@ -71,7 +72,8 @@ public class ComplexServiceImpl implements ComplexService {
 
         return ComplexResponse.builder()
                 .id(complex.getId())
-                .name(complex.getComplexName())
+                .complexName(complex.getComplexName())
+                .aboutComplex(complex.getAboutComplex())
                 .userId(complex.getUser().getId())
                 .contactInfoResponse(ContactInfoMapper.INSTANCE.toContactResponse(contactInfoService.findById(complex.getId())))
                 .fileResponses(getAllFile(complex.getId())
@@ -88,7 +90,8 @@ public class ComplexServiceImpl implements ComplexService {
                 .filter(complex -> complex.getDeletedBy() == null)
                 .map(complex -> ComplexResponse.builder()
                         .id(complex.getId())
-                        .name(complex.getComplexName())
+                        .complexName(complex.getComplexName())
+                        .aboutComplex(complex.getAboutComplex())
                         .userId(complex.getUser().getId())
                         .contactInfoResponse(ContactInfoMapper.INSTANCE.toContactResponse(complex.getContactInfo()))
                         .fileResponses(getAllFile(complex.getId()))
@@ -104,7 +107,8 @@ public class ComplexServiceImpl implements ComplexService {
         complexRepository.save(complex);
         return ComplexResponse.builder()
                 .id(complex.getId())
-                .name(complex.getComplexName())
+                .complexName(complex.getComplexName())
+                .aboutComplex(complex.getAboutComplex())
                 .userId(complex.getUser().getId())
                 .contactInfoResponse(ContactInfoMapper.INSTANCE.toContactResponse(complex.getContactInfo()))
                 .fileResponses(getAllFile(complex.getId()))
@@ -119,7 +123,8 @@ public class ComplexServiceImpl implements ComplexService {
         if (complex.getDeletedBy() == null)
             return ComplexResponse.builder()
                     .id(complex.getId())
-                    .name(complex.getComplexName())
+                    .complexName(complex.getComplexName())
+                    .aboutComplex(complex.getAboutComplex())
                     .userId(complex.getUser().getId())
                     .contactInfoResponse(ContactInfoMapper.INSTANCE.toContactResponse(complex.getContactInfo()))
                     .fileResponses(getAllFile(complex.getId())
@@ -135,7 +140,8 @@ public class ComplexServiceImpl implements ComplexService {
                 .map(complex ->
                         ComplexResponse.builder()
                                 .id(complex.getId())
-                                .name(complex.getComplexName())
+                                .complexName(complex.getComplexName())
+                                .aboutComplex(complex.getAboutComplex())
                                 .userId(complex.getUser().getId())
                                 .contactInfoResponse(ContactInfoMapper.INSTANCE.toContactResponse(complex.getContactInfo()))
                                 .fileResponses(getAllFile(complex.getId())
@@ -169,7 +175,8 @@ public class ComplexServiceImpl implements ComplexService {
     private List<ComplexResponse> toResponse(List<Complex> complexes){
         return complexes.stream().map(complex -> ComplexResponse.builder()
                 .id(complex.getId())
-                .name(complex.getComplexName())
+                .complexName(complex.getComplexName())
+                .aboutComplex(complex.getAboutComplex())
                 .userId(complex.getUser().getId())
                 .contactInfoResponse(ContactInfoMapper.INSTANCE.toContactResponse(complex.getContactInfo()))
                 .fileResponses(getAllFile(complex.getId()))
@@ -183,7 +190,8 @@ public class ComplexServiceImpl implements ComplexService {
         complex.setDeletedAt(LocalDateTime.now());
         return ComplexResponse.builder()
                 .id(complex.getId())
-                .name(complex.getComplexName())
+                .complexName(complex.getComplexName())
+                .aboutComplex(complex.getAboutComplex())
                 .userId(complex.getUser().getId())
                 .contactInfoResponse(ContactInfoMapper.INSTANCE.toContactResponse(complex.getContactInfo()))
                 .fileResponses(getAllFile(complex.getId()))

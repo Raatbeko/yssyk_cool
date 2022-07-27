@@ -37,7 +37,7 @@ public class ComplexController {
     @PostMapping
     @ApiOperation("Сохранение комплекса")
     public ComplexResponse save(@RequestBody ComplexRequest complexRequest,
-                                @RequestPart(value = "attachments", required = false) MultipartFile[] attachments
+                                @RequestPart MultipartFile[] attachments
     ) throws FileNotFoundException {
         return complexService.save(complexRequest,attachments);
     }
