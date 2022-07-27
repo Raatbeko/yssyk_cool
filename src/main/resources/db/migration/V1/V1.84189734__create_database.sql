@@ -11,7 +11,7 @@ CREATE TABLE users (
                        create_time timestamp NOT NULL,
                        update_time timestamp NULL,
                        email varchar(255) NOT NULL,
-                       is_active bool NULL,
+                       is_active bool default false,
                        user_name varchar(255) NOT NULL,
                        "password" varchar(255) NOT NULL,
                        CONSTRAINT uk_6dotkott2kjsp8vw4d0m25fb7 UNIQUE (email),
