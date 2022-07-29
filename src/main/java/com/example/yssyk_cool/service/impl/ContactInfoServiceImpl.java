@@ -25,7 +25,6 @@ public class ContactInfoServiceImpl implements ContactInfoService {
     @Override
     public ContactInfo save(ContactInfoRequest t) {
         return contactInfoRepository.save(ContactInfo.builder()
-                .email(t.getEmail())
                 .phoneNumber(t.getPhoneNumber())
                 .telegramAccountName(t.getTelegramAccountName())
                 .build());
