@@ -72,11 +72,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserTokenResponse getToken(UserAuthRequest request) {
 
-        User userEntity = userRepository.findByEmail(request.getLoginOrEmail());
+        User userEntity = userRepository.findByEmail(request.getLogin());
         boolean isMatches;
 
         if (userEntity == null) {
-            userEntity = userRepository.findByLogin(request.getLoginOrEmail());
+            userEntity = userRepository.findByLogin(request.getLogin());
         }
 
         isMatches = passwordEncoder.matches(request.getPassword(), userEntity.getPassword());
