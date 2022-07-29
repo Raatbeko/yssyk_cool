@@ -6,9 +6,9 @@ import com.example.yssyk_cool.dto.complex.response.ComplexResponse;
 import com.example.yssyk_cool.dto.file.response.FileResponse;
 import com.example.yssyk_cool.entity.Complex;
 import com.example.yssyk_cool.enums.SearchType;
+import com.example.yssyk_cool.exception.AlreadyExistsException;
 import com.example.yssyk_cool.exception.NotFoundException;
 import com.example.yssyk_cool.mapper.ContactInfoMapper;
-import com.example.yssyk_cool.model.CategoryModel;
 import com.example.yssyk_cool.model.SearchModel;
 import com.example.yssyk_cool.repository.ComplexRepository;
 import com.example.yssyk_cool.repository.FileComplexRepository;
@@ -16,7 +16,6 @@ import com.example.yssyk_cool.repository.UserRepository;
 import com.example.yssyk_cool.service.ComplexService;
 import com.example.yssyk_cool.service.ContactInfoService;
 import com.example.yssyk_cool.service.FileComplexService;
-import com.example.yssyk_cool.service.FileService;
 import com.example.yssyk_cool.service.auth.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -56,12 +55,13 @@ public class ComplexServiceImpl implements ComplexService {
         ComplexResponse complexResponse = save(complexRequest);
         complexResponse.setFileResponses(fileService.save(complexResponse.getId(), attachments));
 
-    return complexResponse;
+        return complexResponse;
     }
 
     @Override
     public ComplexResponse save(ComplexRequest t) {
 
+        validate(t);
         Complex complex = complexRepository.save(Complex.builder()
                 .complexName(t.getNameComplex())
                 .aboutComplex(t.getAboutComplex())
@@ -80,6 +80,14 @@ public class ComplexServiceImpl implements ComplexService {
                 ).build();
 
     }
+
+    private void validate(ComplexRequest complexRequest) {
+        Complex complex = complexRepository.findByComplexName(complexRequest.getNameComplex());
+        if (complex != null) {
+            throw new AlreadyExistsException("С таким именем уже сушествует", HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @Override
     public List<ComplexResponse> findAllByUserId(Long userId) {
         if (complexRepository.findAllByUserId(userId).size() == 0) {
@@ -100,7 +108,7 @@ public class ComplexServiceImpl implements ComplexService {
 
     @Override
     public ComplexResponse update(ComplexForUpdateRequest complexRequest) {
-        Complex complex = complexRepository.findById(complexRequest.getComplexId()).orElseThrow(() -> new NotFoundException("complex not found",HttpStatus.BAD_REQUEST));
+        Complex complex = complexRepository.findById(complexRequest.getComplexId()).orElseThrow(() -> new NotFoundException("complex not found", HttpStatus.BAD_REQUEST));
         complex.setComplexName(complexRequest.getNameComplex());
         complex.setContactInfo(contactInfoService.update(complexRequest.getContactInfoRequest()));
 
@@ -159,20 +167,19 @@ public class ComplexServiceImpl implements ComplexService {
     @Override
     public List<ComplexResponse> search(SearchModel searchModel) {
 
-        if (searchModel.getSearchType().equals(SearchType.BY_COMPLEX_NAME)){
+        if (searchModel.getSearchType().equals(SearchType.BY_COMPLEX_NAME)) {
             return getComplexName(searchModel.getTitle());
         }
         return new ArrayList<>();
     }
 
-
-    private List<ComplexResponse> getComplexName(String complexName){
+    private List<ComplexResponse> getComplexName(String complexName) {
         List<Complex> complexes = complexRepository.findAll().stream().filter(complex -> complex.getComplexName().equalsIgnoreCase(complexName)).collect(Collectors.toList());
         return toResponse(complexes);
 
     }
 
-    private List<ComplexResponse> toResponse(List<Complex> complexes){
+    private List<ComplexResponse> toResponse(List<Complex> complexes) {
         return complexes.stream().map(complex -> ComplexResponse.builder()
                 .id(complex.getId())
                 .complexName(complex.getComplexName())
@@ -197,6 +204,13 @@ public class ComplexServiceImpl implements ComplexService {
                 .fileResponses(getAllFile(complex.getId()))
                 .deleted(true).build();
 
+    }
+
+    @Override
+    public boolean check(String check) {
+        Complex complex = complexRepository.findByComplexName(check);
+        
+        return complex == null;
     }
 
 }

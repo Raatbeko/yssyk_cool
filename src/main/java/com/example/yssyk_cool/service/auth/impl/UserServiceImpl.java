@@ -117,6 +117,13 @@ public class UserServiceImpl implements UserService {
                 .build());
     }
 
+    @Override
+    public boolean check(String check) {
+        User user = userRepository.findByEmail(check);
+
+        return user == null;
+    }
+
     private void checkToHave(String login, String email){
 
         User user = userRepository.findByLogin(login);

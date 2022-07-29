@@ -15,4 +15,5 @@ public interface UserService extends BaseService<UserResponse, UserRequest> {
 
     void addRoleToUser(Long id);
 
+    boolean check(String check);
 }

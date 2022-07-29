@@ -13,8 +13,4 @@ public class ContactInfoRequest {
     String phoneNumber;
 
     String telegramAccountName;
-
-    String email;
-
-
 }

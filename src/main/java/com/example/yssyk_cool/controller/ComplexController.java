@@ -73,6 +73,9 @@ public class ComplexController {
         return complexService.delete(id);
     }
 
-
+    @GetMapping("/chek/{check}")
+    public boolean checkName(@PathVariable String check){
+        return complexService.check(check);
+    }
 }
 

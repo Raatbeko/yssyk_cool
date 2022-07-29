@@ -11,6 +11,8 @@ import lombok.experimental.FieldDefaults;
 public class UserTokenResponse {
 
     Long userId;
-    
+
+    String login;
+
     String userToken;
 }

@@ -24,4 +24,6 @@ public interface ComplexService extends BaseService<ComplexResponse, ComplexRequ
     List<ComplexResponse> search(SearchModel searchModel);
 
     ComplexResponse save(ComplexRequest complexRequest, MultipartFile[] attachments);
+
+    boolean check(String check);
 }

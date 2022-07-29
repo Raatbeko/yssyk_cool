@@ -52,6 +52,12 @@ public class UserController {
         return userService.findById(id);
     }
 
+    @GetMapping("/chek/{check}")
+    public boolean checkEmailOrLogin(@PathVariable String check){
+        return userService.check(check);
+    }
+
+
 
 
 }
