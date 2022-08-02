@@ -77,7 +77,6 @@ public class ComplexServiceImpl implements ComplexService {
         CommonReference commonReference = commonReferenceRepository.findByTitle(t.getTypeComplex());
         Complex complex = complexRepository.save(Complex.builder()
                 .complexName(t.getNameComplex())
-                .averagePrice(t.getAveragePrice())
                 .typeComplex(commonReference)
                 .contactInfo(contactInfoService.save(t.getContactInfoRequest()))
                 .location(locationService.save(t.getLocationRequest()))
@@ -188,7 +187,6 @@ public class ComplexServiceImpl implements ComplexService {
         Complex complex = complexRepository.findById(complexRequest.getComplexId()).orElseThrow(() -> new NotFoundException("complex not found",HttpStatus.BAD_REQUEST));
         complex.setComplexName(complexRequest.getNameComplex());
         complex.setTypeComplex(commonReference);
-        complex.setAveragePrice(complexRequest.getAveragePrice());
         complex.setContactInfo(contactInfoService.update(complexRequest.getContactInfoRequest()));
         complex.setLocation(locationService.update(complexRequest.getLocationRequest()));
 
@@ -205,7 +203,6 @@ public class ComplexServiceImpl implements ComplexService {
         return ComplexResponse.builder()
                 .id(complex.getId())
                 .typeComplex(complex.getTypeComplex().getTitle())
-                .averagePrice(complex.getAveragePrice())
                 .name(complex.getComplexName())
                 .userId(complex.getUser().getId())
                 .contactInfoResponse(ContactInfoMapper.INSTANCE.toContactResponse(complex.getContactInfo()))

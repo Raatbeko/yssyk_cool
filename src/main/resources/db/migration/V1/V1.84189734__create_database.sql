@@ -89,6 +89,7 @@ CREATE TABLE complexes (
                            about_complex text NULL,
                            contact_info_id int8 NOT NULL,
                            type_complex bigint references common_reference(id) NOT NULL,
+                           location_id bigint references locations(id),
                            CONSTRAINT complexes_pkey PRIMARY KEY (id),
                            CONSTRAINT fklhsc6ddk4to49jmmwfqimp9m7 FOREIGN KEY (created_by) REFERENCES users(id),
                            CONSTRAINT fkmtcab2yb8jg0m3rkeafqv4w04 FOREIGN KEY (contact_info_id) REFERENCES contact_info(id)
