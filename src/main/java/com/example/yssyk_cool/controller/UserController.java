@@ -57,7 +57,9 @@ public class UserController {
         return userService.check(check);
     }
 
-
-
+    @PostMapping("/edit-password/{email}")
+    public UserResponse editPassword(@PathVariable String email){
+        return userService.editPassword(email);
+    }
 
 }
