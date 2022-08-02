@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,17 +24,22 @@ public class ContactInfoServiceImpl implements ContactInfoService {
     final ContactInfoRepository contactInfoRepository;
 
     @Override
+    @Transactional
     public ContactInfo save(ContactInfoRequest t) {
         return contactInfoRepository.save(ContactInfo.builder()
-                .email(t.getEmail())
                 .phoneNumber(t.getPhoneNumber())
                 .telegramAccountName(t.getTelegramAccountName())
                 .build());
     }
 
     @Override
-    public List<ContactInfo> getAll() {
-        return contactInfoRepository.findAll();
+    @Transactional
+    public ContactInfo update(ContactInfoForUpdateRequest contactInfoRequest) {
+        ContactInfo contactInfo = findById(contactInfoRequest.getContactInfoId());
+        contactInfo.setEmail(contactInfoRequest.getEmail());
+        contactInfo.setPhoneNumber(contactInfoRequest.getPhoneNumber());
+        contactInfo.setTelegramAccountName(contactInfoRequest.getTelegramAccountName());
+        return contactInfoRepository.save(contactInfo);
     }
 
     @Override
@@ -42,16 +48,14 @@ public class ContactInfoServiceImpl implements ContactInfoService {
     }
 
     @Override
+    public List<ContactInfo> getAll() {
+        return contactInfoRepository.findAll();
+    }
+
+
+    @Override
     public ContactInfo delete(Long id) {
         return null;
     }
 
-    @Override
-    public ContactInfo update(ContactInfoForUpdateRequest contactInfoRequest) {
-        ContactInfo contactInfo = findById(contactInfoRequest.getContactInfoId());
-        contactInfo.setEmail(contactInfoRequest.getEmail());
-        contactInfo.setPhoneNumber(contactInfoRequest.getPhoneNumber());
-        contactInfo.setTelegramAccountName(contactInfoRequest.getTelegramAccountName());
-        return contactInfoRepository.save(contactInfo);
-    }
 }

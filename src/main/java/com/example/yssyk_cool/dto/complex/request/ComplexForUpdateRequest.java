@@ -1,10 +1,7 @@
 package com.example.yssyk_cool.dto.complex.request;
 
 import com.example.yssyk_cool.dto.contactInfo.request.ContactInfoForUpdateRequest;
-import com.example.yssyk_cool.dto.contactInfo.request.ContactInfoRequest;
 import com.example.yssyk_cool.dto.location.request.LocationForUpdateRequest;
-import com.example.yssyk_cool.dto.location.request.LocationRequest;
-import com.example.yssyk_cool.enums.TypeComplex;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -19,7 +16,6 @@ public class ComplexForUpdateRequest {
 
     Long complexId;
 
-
     @NotNull
     String nameComplex;
 
@@ -27,7 +23,7 @@ public class ComplexForUpdateRequest {
 
     String averagePrice;
 
-    TypeComplex typeComplex;
+    String typeComplex;
 
     LocationForUpdateRequest locationRequest;
 

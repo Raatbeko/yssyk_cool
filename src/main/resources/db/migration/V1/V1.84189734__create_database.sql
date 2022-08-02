@@ -1,5 +1,5 @@
 CREATE TABLE roles (
-                       id bigserial NOT NULL,
+                       id bigint NOT NULL,
                        create_time timestamp NOT NULL,
                        update_time timestamp NULL,
                        name_role varchar(255) NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE users (
                        create_time timestamp NOT NULL,
                        update_time timestamp NULL,
                        email varchar(255) NOT NULL,
-                       is_active bool NULL,
+                       is_active bool default false,
                        user_name varchar(255) NOT NULL,
                        "password" varchar(255) NOT NULL,
                        CONSTRAINT uk_6dotkott2kjsp8vw4d0m25fb7 UNIQUE (email),
@@ -28,6 +28,7 @@ CREATE TABLE user_roles (
                             CONSTRAINT fkh8ciramu9cc9q3qcqiv4ue8a6 FOREIGN KEY (role_id) REFERENCES roles(id),
                             CONSTRAINT fkhfh9dx7w3ubf1co1vdev94g3f FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
 CREATE TABLE common_reference_type (
                                        id bigserial NOT NULL,
                                        create_time timestamp NOT NULL,
@@ -79,18 +80,16 @@ CREATE TABLE contact_info (
 );
 CREATE TABLE complexes (
                            id bigserial NOT NULL,
-                           create_time timestamp NOT NULL,
-                           update_time timestamp NULL,
-                           average_price varchar(255) NULL,
                            created_by int8 NULL,
                            deleted_at timestamp without time zone,
                            deleted_by bigint references users (id),
+                           create_time timestamp NOT NULL,
+                           update_time timestamp NULL,
                            complex_name varchar(255) NOT NULL,
+                           about_complex text NULL,
                            contact_info_id int8 NOT NULL,
-                           location_id int8 NOT NULL,
-                           types varchar NOT NULL ,
+                           type_complex bigint references common_reference(id) NOT NULL,
                            CONSTRAINT complexes_pkey PRIMARY KEY (id),
-                           CONSTRAINT fkfgs7ya5svr9gjduf724utgns8 FOREIGN KEY (location_id) REFERENCES locations(id),
                            CONSTRAINT fklhsc6ddk4to49jmmwfqimp9m7 FOREIGN KEY (created_by) REFERENCES users(id),
                            CONSTRAINT fkmtcab2yb8jg0m3rkeafqv4w04 FOREIGN KEY (contact_info_id) REFERENCES contact_info(id)
 );
@@ -118,4 +117,10 @@ CREATE TABLE file_complexes (
                                 CONSTRAINT file_complexes_pkey PRIMARY KEY (id),
                                 CONSTRAINT fk6q149sjr7pw8dqrqmcl6wsepd FOREIGN KEY (file_id) REFERENCES files(id),
                                 CONSTRAINT fk98ajl7pm083gfirfpkkka3hlx FOREIGN KEY (complex_id) REFERENCES complexes(id)
+);
+CREATE TABLE complexes_reviews (
+                                   complex_id int8 NOT NULL,
+                                   reviews_id int8 NOT NULL,
+                                   CONSTRAINT fkgbem52cfqubl2brwgig8q370l FOREIGN KEY (reviews_id) REFERENCES reviews(id),
+                                   CONSTRAINT fkj38p8c77g5vndetkd0uq27hak FOREIGN KEY (complex_id) REFERENCES complexes(id)
 );

@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
@@ -25,7 +26,7 @@ public class ReviewController {
 
     final ReviewService reviewService;
 
-    @PostMapping("/save")
+    @PostMapping
     @ApiOperation("Добавить отзыв для комплекса")
     public ReviewResponse save(@RequestBody ReviewRequest request) throws FileNotFoundException {
         return reviewService.save(request);
@@ -35,5 +36,11 @@ public class ReviewController {
     @ApiOperation("Получить все отзывы по id комплекса")
     public List<ReviewResponse> getAllByComplexId(@PathVariable("id") Complex complex){
         return reviewService.getAllByComplexId(complex);
+    }
+
+    @DeleteMapping("/{id}")
+    @ApiOperation(("Удаление отзыва"))
+    public ReviewResponse delete(@PathVariable Long id){
+        return reviewService.delete(id);
     }
 }

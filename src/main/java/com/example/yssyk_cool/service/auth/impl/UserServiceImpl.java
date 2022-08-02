@@ -9,6 +9,7 @@ import com.example.yssyk_cool.entity.User;
 import com.example.yssyk_cool.entity.UserRole;
 import com.example.yssyk_cool.exception.EmailNotBeEmptyException;
 import com.example.yssyk_cool.exception.NotFoundException;
+import com.example.yssyk_cool.exception.UserNotActiveException;
 import com.example.yssyk_cool.exception.UserSignInException;
 import com.example.yssyk_cool.mapper.UserMapper;
 import com.example.yssyk_cool.repository.RoleRepository;
@@ -22,6 +23,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Base64;
 import java.util.List;
@@ -42,6 +44,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    @Transactional
     public UserResponse save(UserRequest t) {
         if (t.getEmail() == null)
             throw new EmailNotBeEmptyException("email is empty", HttpStatus.BAD_REQUEST);
@@ -69,20 +72,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserTokenResponse getToken(UserAuthRequest request) {
-//      User userEntity = userRepository.findByUserNameAndEMail(request.getLoginOrEmail());
-        User userEntity = userRepository.findByEmail(request.getLoginOrEmail());
+
+        User userEntity = userRepository.findByEmail(request.getLogin());
         boolean isMatches;
-        if (userEntity != null){
-            isMatches = passwordEncoder.matches(request.getPassword(), userEntity.getPassword());
-        }else {
-            userEntity = userRepository.findByLogin(request.getLoginOrEmail());
-            isMatches = passwordEncoder.matches(request.getPassword(),userEntity.getPassword());
+
+        if (userEntity == null) {
+            userEntity = userRepository.findByLogin(request.getLogin());
         }
+
+        isMatches = passwordEncoder.matches(request.getPassword(), userEntity.getPassword());
+
+        if (!userEntity.getIsActive()) throw new UserNotActiveException("Пользователь заблокирован", HttpStatus.BAD_REQUEST);
+
         if (isMatches) {
             String token = "Basic " + new String(Base64.getEncoder()
                     .encode((userEntity.getLogin() + ":" + request.getPassword()).getBytes()));
             return UserTokenResponse.builder()
+                    .userId(userEntity.getId())
+                    .login(userEntity.getLogin())
                     .userToken(token).build();
         } else {
             throw new UserSignInException("Неправильный логин или пароль!", HttpStatus.NOT_FOUND);
@@ -96,6 +105,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void addRoleToUser(Long id) {
         User user = userRepository
                 .findById(id).orElseThrow(()->new NotFoundException("User not found",HttpStatus.BAD_REQUEST));
@@ -112,7 +122,24 @@ public class UserServiceImpl implements UserService {
                 .build());
     }
 
+    @Override
+    public boolean check(String check) {
+        User user = userRepository.findByEmail(check);
+
+        return user == null;
+    }
+
+    @Override
+    public UserResponse editPassword(String email) {
+        User user = userRepository.findByEmail(email);
+        if (user != null){
+
+        }
+        return null;
+    }
+
     private void checkToHave(String login, String email){
+
         User user = userRepository.findByLogin(login);
         if (user != null){
             throw new UserSignInException("Такой login уже сушествует!",HttpStatus.BAD_REQUEST);
@@ -122,6 +149,7 @@ public class UserServiceImpl implements UserService {
         if (user != null){
             throw new UserSignInException("Такой email уже сушествует!",HttpStatus.BAD_REQUEST);
         }
+
     }
 
 

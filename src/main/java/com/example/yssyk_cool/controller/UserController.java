@@ -35,7 +35,7 @@ public class UserController {
         return userService.save(request);
     }
 
-    @PostMapping("/auto")
+    @PostMapping("/auth")
     @ApiOperation("Авторизация")
     public UserTokenResponse auto(@RequestBody UserAuthRequest request) {
         return userService.getToken(request);
@@ -52,6 +52,14 @@ public class UserController {
         return userService.findById(id);
     }
 
+    @GetMapping("/chek/{check}")
+    public boolean checkEmailOrLogin(@PathVariable String check){
+        return userService.check(check);
+    }
 
+    @PostMapping("/edit-password/{email}")
+    public UserResponse editPassword(@PathVariable String email){
+        return userService.editPassword(email);
+    }
 
 }

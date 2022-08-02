@@ -1,11 +1,12 @@
 package com.example.yssyk_cool.entity;
 
-import com.example.yssyk_cool.enums.TypeComplex;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "complexes")
@@ -41,8 +42,12 @@ public class Complex extends BaseEntity {
     @Column(name = "deleted_at")
     LocalDateTime deletedAt;
 
-    @Column(name = "types",nullable = false)
-    @Enumerated(value = EnumType.STRING)
-    TypeComplex typeComplex;
+    @ManyToOne
+    @JoinColumn(name = "type_complex")
+    CommonReference typeComplex;
+
+    @ManyToMany
+    @JoinColumn(name = "review_id")
+    List<Review> reviews = new ArrayList<>();
 
 }

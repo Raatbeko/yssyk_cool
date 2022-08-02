@@ -10,6 +10,7 @@ import com.example.yssyk_cool.service.FileService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import net.bytebuddy.matcher.FilterableList;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
@@ -63,7 +64,7 @@ public class FileServiceImpl implements FileService {
 //        return null;
 //    }
     @Override
-    public FileResponse save(FileComplexRequest file) {
+    public FileResponse save(MultipartFile file) {
         try {
             LocalDateTime localDateTime = LocalDateTime.now();
             String URl = "C:\\Users\\Dell\\IdeaProjects\\yssyk_cool\\src\\main\\resources\\images\\";
@@ -72,10 +73,10 @@ public class FileServiceImpl implements FileService {
             if (!tempFile.exists()) {
                 tempFile.mkdir();
             }
-            String fileName = getFileName(file.getMultipartFile()) + "_" + formatDate(localDateTime) + "." + getExtension(file.getMultipartFile());
+            String fileName = getFileName(file) + "_" + formatDate(localDateTime) + "." + getExtension(file);
 
             String filePath = URl + fileName;
-            Files.copy(file.getMultipartFile().getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
 
             FileMulti fileInDataBase = fileRepository.save(
                     FileMulti.builder()
@@ -94,18 +95,35 @@ public class FileServiceImpl implements FileService {
         }
         return null;
     }
+    private static String getExtension(MultipartFile file) {
+
+        String fullName = file.getOriginalFilename();
+
+        assert fullName != null;
+        int dot = fullName.lastIndexOf('.') + 1;
+
+        return fullName.substring(dot);
+    }
+
+    private static String getFileName(MultipartFile file) {
+        String fullName = file.getOriginalFilename();
+
+        assert fullName != null;
+        int dot = fullName.lastIndexOf('.');
+
+        return fullName.substring(0, dot);
+    }
+
+    private static String formatDate(LocalDateTime dateTime) {
+        return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
+    }
 
     @Override
-    public List<FileResponse> getAll() {
-        List<FileMulti> fileEntities = fileRepository.findAll();
+    public List<FileResponse> save(MultipartFile[] attachments) {
         List<FileResponse> fileResponses = new ArrayList<>();
 
-        for (FileMulti fileEntity : fileEntities) {
-
-            fileResponses.add(FileResponse.builder()
-                    .id(fileEntity.getId())
-                    .url(fileEntity.getUrl()).build());
-
+        for (MultipartFile attachment : attachments) {
+            fileResponses.add(save(attachment));
         }
 
         return fileResponses;
@@ -133,31 +151,26 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public List<FileResponse> getAll() {
+        List<FileMulti> fileEntities = fileRepository.findAll();
+        List<FileResponse> fileResponses = new ArrayList<>();
+
+        for (FileMulti fileEntity : fileEntities) {
+
+            fileResponses.add(FileResponse.builder()
+                    .id(fileEntity.getId())
+                    .url(fileEntity.getUrl()).build());
+
+        }
+
+        return fileResponses;
+    }
+
+
+    @Override
     public FileResponse delete(Long id) {
         return null;
     }
 
-    private static String getExtension(MultipartFile file) {
-
-        String fullName = file.getOriginalFilename();
-
-        assert fullName != null;
-        int dot = fullName.lastIndexOf('.') + 1;
-
-        return fullName.substring(dot);
-    }
-
-    private static String getFileName(MultipartFile file) {
-        String fullName = file.getOriginalFilename();
-
-        assert fullName != null;
-        int dot = fullName.lastIndexOf('.');
-
-        return fullName.substring(0, dot);
-    }
-
-    private static String formatDate(LocalDateTime dateTime) {
-        return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
-    }
 
 }

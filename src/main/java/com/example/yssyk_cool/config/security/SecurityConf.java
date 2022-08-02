@@ -31,13 +31,13 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
                 .dataSource(dataSource)
                 .usersByUsernameQuery("SELECT t.user_name, t.password, t.is_active FROM users t WHERE t.user_name = ?")
                 .authoritiesByUsernameQuery(
-                        "SELECT u.user_name, ur.name_role" +
-                                "FROM user_role ur" +
+                        "SELECT u.user_name, r.name_role " +
+                                "FROM user_roles ur " +
                                 "INNER JOIN users u " +
-                                "on ur.user_id = u.id" +
-                                "INNER JOIN roles r" +
-                                "on ur.role_id = r.id" +
-                                "WHERE u.user_name = ? AND u.is_active = 1");
+                                "on ur.user_id = u.id " +
+                                "INNER JOIN roles r " +
+                                "on ur.role_id = r.id " +
+                                "WHERE u.user_name = ? ");
     }
 
     @Override

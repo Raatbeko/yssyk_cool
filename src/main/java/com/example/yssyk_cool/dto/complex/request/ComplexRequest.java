@@ -2,7 +2,7 @@ package com.example.yssyk_cool.dto.complex.request;
 
 import com.example.yssyk_cool.dto.contactInfo.request.ContactInfoRequest;
 import com.example.yssyk_cool.dto.location.request.LocationRequest;
-import com.example.yssyk_cool.enums.TypeComplex;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -24,7 +24,7 @@ public class ComplexRequest {
 
     String averagePrice;
 
-    TypeComplex typeComplex;
+    String typeComplex;
 
     LocationRequest locationRequest;
 

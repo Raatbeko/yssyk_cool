@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,14 +34,28 @@ public class ReviewServiceImpl implements ReviewService {
     final UserRepository userRepository;
 
     @Override
+    @Transactional
     public ReviewResponse save(ReviewRequest t) {
+
         Review review = reviewRepository.save(Review.builder()
                 .review(t.getReview())
                 .grade(t.getGrade())
-                .user(userRepository.findById(t.getUserId()).orElseThrow(()-> new NotFoundException("not found user",HttpStatus.NOT_FOUND)))
-                .complexId(complexRepository.findById(t.getComplexId()).orElseThrow(() -> new NotFoundException("complex not found",HttpStatus.BAD_REQUEST)))
+                .user(userRepository.findById(t.getUserId()).orElseThrow(() -> new NotFoundException("not found user", HttpStatus.NOT_FOUND)))
                 .build());
+
+        Complex complex = complexRepository.findById(t.getComplexId()).orElseThrow();
+        complex.getReviews().add(review);
+        complexRepository.save(complex);
+
         return ReviewMapper.INSTANCE.toReviewResponse(review);
+    }
+
+    @Override
+    public ReviewResponse findById(Long id) {
+
+        return ReviewMapper.INSTANCE.toReviewResponse(reviewRepository
+                .findById(id)
+                .orElseThrow(() -> new NotFoundException("Not found", HttpStatus.NOT_FOUND)));
     }
 
     @Override
@@ -48,20 +64,10 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ReviewResponse findById(Long id) {
-        return ReviewMapper.INSTANCE.toReviewResponse(reviewRepository
-                .findById(id)
-                .orElseThrow(() ->new NotFoundException("Not found", HttpStatus.NOT_FOUND)));
-    }
-
-    @Override
-    public ReviewResponse delete(Long id) {
-        return null;
-    }
-
-    @Override
     public List<ReviewResponse> getAllByComplexId(Complex complex) {
-        return reviewRepository.findAllByComplexId(complex).stream()
+
+        return complex.getReviews().stream()
+                .filter(review -> review.getDeletedAt() == null)
                 .map(review -> ReviewResponse.builder()
                         .id(review.getId())
                         .grade(review.getGrade())
@@ -69,8 +75,15 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ReviewResponse getByComplexId(Complex complex) {
-        return ReviewMapper.INSTANCE.toReviewResponse(reviewRepository.findByComplexId(complex));
+    @Transactional
+    public ReviewResponse delete(Long id) {
+
+        Review review = reviewRepository.findById(id).orElseThrow();
+        review.setDeletedAt(LocalDateTime.now());
+        reviewRepository.save(review);
+
+        return ReviewMapper.INSTANCE.toReviewResponse(review);
     }
+
 }
 

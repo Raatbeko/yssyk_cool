@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -37,7 +38,7 @@ public class FileComplexController {
 
     final FileService service;
 
-    @RequestMapping(value = "/save/{id}", method = RequestMethod.POST, consumes = {"multipart/form-data"})
+    @RequestMapping(value = "/{id}", method = RequestMethod.POST, consumes = {"multipart/form-data"})
     @ApiOperation("Сохранение фотки по id комплекса")
     public FileResponse save(@ModelAttribute MultipartFile multipartFile,
                              @PathVariable("id") Long complexId) {
@@ -55,7 +56,7 @@ public class FileComplexController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<InputStreamResource> getByComplexId(@PathVariable Long id) throws StorageException, IOException {
+    public ResponseEntity<InputStreamResource> getById(@PathVariable Long id) throws StorageException, IOException {
 
         InputStreamResource inputStreamResource = new InputStreamResource(fileService.load(id).getInputStream());
 

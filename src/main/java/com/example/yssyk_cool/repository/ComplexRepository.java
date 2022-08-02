@@ -15,4 +15,6 @@ public interface ComplexRepository extends JpaRepository<Complex,Long>{
     List<Complex> findByLocationCityTitle(String title);
 
     List<Complex> findByLocationAreaTitle(String title);
+
+    Complex findByComplexName(String check);
 }
