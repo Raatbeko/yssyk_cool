@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class ContactInfoServiceImpl implements ContactInfoService {
     final ContactInfoRepository contactInfoRepository;
 
     @Override
+    @Transactional
     public ContactInfo save(ContactInfoRequest t) {
         return contactInfoRepository.save(ContactInfo.builder()
                 .phoneNumber(t.getPhoneNumber())
@@ -31,6 +33,7 @@ public class ContactInfoServiceImpl implements ContactInfoService {
     }
 
     @Override
+    @Transactional
     public ContactInfo update(ContactInfoForUpdateRequest contactInfoRequest) {
         ContactInfo contactInfo = findById(contactInfoRequest.getContactInfoId());
         contactInfo.setEmail(contactInfoRequest.getEmail());

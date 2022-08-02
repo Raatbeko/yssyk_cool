@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -47,6 +48,7 @@ public class ComplexServiceImpl implements ComplexService {
     final FileComplexService fileService;
 
     @Override
+    @Transactional
     public ComplexResponse save(
             ComplexRequest complexRequest,
             MultipartFile[] attachments
@@ -59,6 +61,7 @@ public class ComplexServiceImpl implements ComplexService {
     }
 
     @Override
+    @Transactional
     public ComplexResponse save(ComplexRequest t) {
 
         validate(t);
@@ -107,6 +110,7 @@ public class ComplexServiceImpl implements ComplexService {
     }
 
     @Override
+    @Transactional
     public ComplexResponse update(ComplexForUpdateRequest complexRequest) {
         Complex complex = complexRepository.findById(complexRequest.getComplexId()).orElseThrow(() -> new NotFoundException("complex not found", HttpStatus.BAD_REQUEST));
         complex.setComplexName(complexRequest.getNameComplex());

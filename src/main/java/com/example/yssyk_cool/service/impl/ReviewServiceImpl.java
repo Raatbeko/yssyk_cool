@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,6 +34,7 @@ public class ReviewServiceImpl implements ReviewService {
     final UserRepository userRepository;
 
     @Override
+    @Transactional
     public ReviewResponse save(ReviewRequest t) {
 
         Review review = reviewRepository.save(Review.builder()
@@ -73,6 +75,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public ReviewResponse delete(Long id) {
 
         Review review = reviewRepository.findById(id).orElseThrow();

@@ -23,6 +23,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Base64;
 import java.util.List;
@@ -43,6 +44,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    @Transactional
     public UserResponse save(UserRequest t) {
         if (t.getEmail() == null)
             throw new EmailNotBeEmptyException("email is empty", HttpStatus.BAD_REQUEST);
@@ -70,6 +72,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserTokenResponse getToken(UserAuthRequest request) {
 
         User userEntity = userRepository.findByEmail(request.getLogin());
@@ -101,6 +104,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void addRoleToUser(Long id) {
         User user = userRepository
                 .findById(id).orElseThrow(()->new NotFoundException("User not found",HttpStatus.BAD_REQUEST));
@@ -122,6 +126,15 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(check);
 
         return user == null;
+    }
+
+    @Override
+    public UserResponse editPassword(String email) {
+        User user = userRepository.findByEmail(email);
+        if (user != null){
+
+        }
+        return null;
     }
 
     private void checkToHave(String login, String email){

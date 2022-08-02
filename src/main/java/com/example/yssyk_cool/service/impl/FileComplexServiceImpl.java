@@ -16,6 +16,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class FileComplexServiceImpl implements FileComplexService {
 
 
     @Override
+    @Transactional
     public FileResponse save(FileComplexRequest t) {
         FileResponse fileResponse = fileService.save(t.getMultipartFile());
         fileComplexRepository.save(FileComplex.builder()
@@ -47,6 +49,7 @@ public class FileComplexServiceImpl implements FileComplexService {
     }
 
     @Override
+    @Transactional
     public List<FileResponse> save(Long complexId, MultipartFile[] attachments) {
         List<FileResponse> fileResponses = new ArrayList<>();
 
