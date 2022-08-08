@@ -50,7 +50,6 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"/").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/v1/user/auto").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/v1/user/register").permitAll()
-                .antMatchers(HttpMethod.GET,"/api/v1/user/**").hasAnyRole(SecurityRole.ROLE_USER.getNameRole(),SecurityRole.ROLE_PROVIDER.getNameRole())
                 .antMatchers(HttpMethod.GET,"/api/v1/user").permitAll()
 
                 .antMatchers(HttpMethod.GET,"/api/complex/{id}").permitAll()

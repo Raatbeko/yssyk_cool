@@ -6,11 +6,9 @@ import com.example.yssyk_cool.dto.user.response.UserResponse;
 import com.example.yssyk_cool.dto.user.response.UserTokenResponse;
 import com.example.yssyk_cool.exception.EmailNotBeEmptyException;
 import com.example.yssyk_cool.service.auth.UserService;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +29,7 @@ public class UserController {
 
     @PostMapping("/register")
     @ApiOperation("Регистрация")
-    public UserResponse register(@RequestBody UserRequest request) throws EmailNotBeEmptyException, FileNotFoundException {
+    public UserResponse register(@RequestBody UserRequest request) throws EmailNotBeEmptyException{
         return userService.save(request);
     }
 
@@ -48,7 +46,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public UserResponse getUserById(@PathVariable("id") Long id) throws FileNotFoundException {
+    public UserResponse getUserById(@PathVariable("id") Long id){
         return userService.findById(id);
     }
 

@@ -16,5 +16,4 @@ public class ContactInfoResponse {
 
     String telegramAccountName;
 
-    String email;
 }

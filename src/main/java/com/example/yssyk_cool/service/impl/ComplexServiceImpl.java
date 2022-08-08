@@ -55,7 +55,9 @@ public class ComplexServiceImpl implements ComplexService {
     ) {
 
         ComplexResponse complexResponse = save(complexRequest);
-        complexResponse.setFileResponses(fileService.save(complexResponse.getId(), attachments));
+        if (attachments.length != 0) {
+            complexResponse.setFileResponses(fileService.save(complexResponse.getId(), attachments));
+        }
 
         return complexResponse;
     }
