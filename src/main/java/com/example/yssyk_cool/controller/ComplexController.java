@@ -34,6 +34,12 @@ public class ComplexController {
         return complexService.search(searchModel);
     }
 
+    @GetMapping("/complex-in-cities")
+    @ApiOperation("Получить комплексов по городам")
+    public List<CategoryModel> getComplexInCities(){
+        return complexService.getComplexInCity();
+    }
+
     @PostMapping
     @ApiOperation("Сохранение комплекса")
     public ComplexResponse save(@RequestPart ComplexRequest complexRequest,
@@ -50,7 +56,7 @@ public class ComplexController {
 
     @GetMapping("/{id}")
     @ApiOperation("Получить комплес по id")
-    public ComplexResponse getById(@PathVariable Long id) throws FileNotFoundException {
+    public ComplexResponse getById(@PathVariable Long id){
         return complexService.findById(id);
     }
 
@@ -61,7 +67,7 @@ public class ComplexController {
     }
 
     @GetMapping("/get-by-user-id/{id}")
-    @ApiOperation("Получить все посты одношо провайдера по его id")
+    @ApiOperation("Получить все посты одного провайдера по его id")
     public List<ComplexResponse> getByUserId(@PathVariable Long id){
         return complexService.findAllByUserId(id);
     }

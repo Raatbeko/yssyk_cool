@@ -125,27 +125,52 @@ public class ComplexServiceImpl implements ComplexService {
     @Override
     public List<ComplexResponse> search(SearchModel searchModel) {
 
-        if (searchModel.getSearchType().equals(SearchType.BY_AREA)){
-            return getByArea(searchModel.getTitle());
+        List<ComplexResponse> complexResponses;
+
+        if (searchModel.getSearchType().equals(SearchType.BY_AREA)) {
+            complexResponses = getByArea(searchModel.getTitle());
+            if (complexResponses.size() != 0) {
+                return complexResponses;
+            }
+            throw new NotFoundException("Не найдено", HttpStatus.BAD_REQUEST);
         }
 
-        if (searchModel.getSearchType().equals(SearchType.BY_COMPLEX_NAME)){
-            return getComplexName(searchModel.getTitle());
+        if (searchModel.getSearchType().equals(SearchType.BY_CITY)) {
+            complexResponses = getByCity(searchModel.getTitle());
+            if (complexResponses.size() != 0) {
+                return complexResponses;
+            }
+            throw new NotFoundException("Не найдено", HttpStatus.BAD_REQUEST);
+        }
+
+        if (searchModel.getSearchType().equals(SearchType.BY_COMPLEX_NAME)) {
+            complexResponses = getComplexName(searchModel.getTitle());
+            if (complexResponses.size() != 0) {
+                return complexResponses;
+            }
+            throw new NotFoundException("Не найдено", HttpStatus.BAD_REQUEST);
         }
         return new ArrayList<>();
     }
 
-    private List<ComplexResponse> getComplexName(String complexName){
+    private List<ComplexResponse> getComplexName(String complexName) {
         List<Complex> complexes = complexRepository.findAll().stream().filter(complex -> complex.getComplexName().equalsIgnoreCase(complexName)).collect(Collectors.toList());
         return toResponse(complexes);
 
     }
-    private List<ComplexResponse> getByArea(String title){
-        List<Complex> complexes = complexRepository.findAll().stream()
-                .filter(complex -> complex.getLocation().getArea().getTitle().equalsIgnoreCase(title)).collect(Collectors.toList());
+
+    private List<ComplexResponse> getByCity(String title){
+        List<Complex> complexes = complexRepository.findByLocationCityTitle(title);
+
+        return  toResponse(complexes);
+    }
+
+    private List<ComplexResponse> getByArea(String title) {
+        List<Complex> complexes = complexRepository.findByLocationAreaTitle(title);
 
         return toResponse(complexes);
     }
+
     @Override
     public List<CategoryModel> getComplexInCity() {
         List<CategoryModel> categoryModels = new ArrayList<>();
@@ -184,7 +209,7 @@ public class ComplexServiceImpl implements ComplexService {
     public ComplexResponse update(ComplexForUpdateRequest complexRequest) {
 
         CommonReference commonReference = commonReferenceRepository.findByTitle(complexRequest.getTypeComplex());
-        Complex complex = complexRepository.findById(complexRequest.getComplexId()).orElseThrow(() -> new NotFoundException("complex not found",HttpStatus.BAD_REQUEST));
+        Complex complex = complexRepository.findById(complexRequest.getComplexId()).orElseThrow(() -> new NotFoundException("complex not found", HttpStatus.BAD_REQUEST));
         complex.setComplexName(complexRequest.getNameComplex());
         complex.setTypeComplex(commonReference);
         complex.setContactInfo(contactInfoService.update(complexRequest.getContactInfoRequest()));
@@ -195,11 +220,11 @@ public class ComplexServiceImpl implements ComplexService {
         return toResponse(complex);
     }
 
-    private List<ComplexResponse> toResponse(List<Complex> complexes){
+    private List<ComplexResponse> toResponse(List<Complex> complexes) {
         return complexes.stream().map(this::toResponse).collect(Collectors.toList());
     }
 
-    private ComplexResponse toResponse(Complex complex){
+    private ComplexResponse toResponse(Complex complex) {
         return ComplexResponse.builder()
                 .id(complex.getId())
                 .typeComplex(complex.getTypeComplex().getTitle())

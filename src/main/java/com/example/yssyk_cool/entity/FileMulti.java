@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "files")
@@ -25,4 +26,10 @@ public class FileMulti extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     FileType fileType;
 
+    @ManyToOne
+    @JoinColumn(name = "deleted_by")
+    User deletedBy;
+
+    @Column(name = "deleted_at")
+    LocalDateTime deletedAt;
 }

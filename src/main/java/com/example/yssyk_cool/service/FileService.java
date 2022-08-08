@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface FileService extends BaseService<FileResponse, MultipartFile>{
 
-    Resource load(Long id)throws StorageException;
+    byte[] load(Long id)throws StorageException;
 
     List<FileResponse> save(MultipartFile[] attachments);
 }

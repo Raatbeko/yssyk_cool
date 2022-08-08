@@ -67,6 +67,8 @@ CREATE TABLE files (
                        "type" varchar(255) NULL,
                        path varchar(255) NULL,
                        url varchar(255) NULL,
+                       deleted_at timestamp without time zone,
+                       deleted_by bigint references users (id),
                        CONSTRAINT files_pkey PRIMARY KEY (id)
 );
 CREATE TABLE contact_info (

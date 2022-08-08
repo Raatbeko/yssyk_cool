@@ -3,6 +3,7 @@ package com.example.yssyk_cool.service.impl;
 import com.example.yssyk_cool.dto.file.request.FileComplexRequest;
 import com.example.yssyk_cool.dto.file.response.FileResponse;
 import com.example.yssyk_cool.entity.FileComplex;
+import com.example.yssyk_cool.entity.FileMulti;
 import com.example.yssyk_cool.exception.NotFoundException;
 import com.example.yssyk_cool.exception.StorageException;
 import com.example.yssyk_cool.repository.ComplexRepository;
@@ -15,10 +16,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,17 +68,7 @@ public class FileComplexServiceImpl implements FileComplexService {
     }
 
     @Override
-    public Resource load(Long id) throws StorageException {
-        List<FileComplex> fileComplex = fileComplexRepository.findFileComplexByComplexesId(id);
-        List<Resource> resources = fileComplex.stream().map(complex -> {
-            try {
-                return fileService.load(complex.getFileMulti().getId());
-            } catch (StorageException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }).collect(Collectors.toList());
-
+    public byte[] load(Long id) throws StorageException {
         return  fileService.load(id);
     }
 
@@ -91,7 +84,12 @@ public class FileComplexServiceImpl implements FileComplexService {
 
     @Override
     public FileResponse delete(Long id) {
-        return null;
+        FileMulti fileMulti = fileRepository.findById(id).orElseThrow();
+        fileMulti.setDeletedAt(LocalDateTime.now());
+        return FileResponse.builder()
+                .url(fileMulti.getUrl())
+                .id(fileMulti.getId())
+                .build();
     }
 
 }

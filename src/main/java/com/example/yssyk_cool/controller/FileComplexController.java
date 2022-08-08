@@ -15,6 +15,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.entity.FileEntity;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -56,14 +57,14 @@ public class FileComplexController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<InputStreamResource> getById(@PathVariable Long id) throws StorageException, IOException {
+    public byte[] getById(@PathVariable Long id) throws StorageException{
 
-        InputStreamResource inputStreamResource = new InputStreamResource(fileService.load(id).getInputStream());
+        return fileService.load(id);
+    }
 
-        return ResponseEntity
-                .ok()
-                .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .body(inputStreamResource);
+    @DeleteMapping("/{id}")
+    public FileResponse delete(@PathVariable Long id){
+        return fileService.delete(id);
     }
 
 }

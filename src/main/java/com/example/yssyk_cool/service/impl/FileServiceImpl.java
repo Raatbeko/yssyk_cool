@@ -17,7 +17,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.*;
 import java.time.LocalDateTime;
@@ -138,15 +141,17 @@ public class FileServiceImpl implements FileService {
                 .build();
     }
 
-    public Resource load(Long id) throws StorageException {
+    public byte[] load(Long id) throws StorageException {
         FileMulti fileEntity = fileRepository.findById(id).orElseThrow(() -> new FileNotFoundException("file not found", HttpStatus.BAD_REQUEST));
         try {
-            Path filePath = Path.of(fileEntity.getPath());
+            DataInputStream dis = new DataInputStream(new FileInputStream(fileEntity.getPath()));
+            byte[] theBytes = new byte[dis.available()];
+            dis.read(theBytes, 0, dis.available());
+            dis.close();
+            return theBytes;
 
-            return new UrlResource(filePath.toUri());
-
-        } catch (MalformedURLException e) {
-            throw new StorageException("Файл не найден: " + fileEntity.getPath(), e);
+        } catch (IOException ex) {
+            throw new StorageException("Файл не найден: " + fileEntity.getPath(), HttpStatus.BAD_REQUEST);
         }
     }
 
