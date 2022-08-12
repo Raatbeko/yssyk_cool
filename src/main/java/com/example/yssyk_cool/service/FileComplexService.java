@@ -14,5 +14,5 @@ public interface FileComplexService extends BaseService<FileResponse, FileComple
 
     byte[] load(Long id)throws StorageException;
 
-    List<FileResponse> save(Long id, MultipartFile[] attachments);
+    List<FileResponse> save(Long id, MultipartFile[] attachments) ;
 }
