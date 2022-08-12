@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface BaseService<Response, Request> {
 
-    Response save(Request t) ;
+    Response save(Request t) throws Exception;
 
     List<Response> getAll();
 

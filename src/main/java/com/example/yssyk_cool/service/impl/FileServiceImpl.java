@@ -1,6 +1,5 @@
 package com.example.yssyk_cool.service.impl;
 
-import com.example.yssyk_cool.dto.file.request.FileComplexRequest;
 import com.example.yssyk_cool.dto.file.response.FileResponse;
 import com.example.yssyk_cool.entity.FileMulti;
 import com.example.yssyk_cool.exception.FileNotFoundException;
@@ -10,9 +9,6 @@ import com.example.yssyk_cool.service.FileService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import net.bytebuddy.matcher.FilterableList;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,8 +17,9 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -35,39 +32,8 @@ import java.util.List;
 public class FileServiceImpl implements FileService {
 
     final FileRepository fileRepository;
-
-    //    @Override
-//    public FileResponse save(FileComplexRequest fileRequest) {
-//        File file;
-//        try {
-//            file = Files.createTempFile(System.currentTimeMillis() + "", Objects.requireNonNull(fileRequest.getMultipartFile().getOriginalFilename())
-//                    .substring(fileRequest.getMultipartFile().getOriginalFilename().length()-4)).toFile();
-//            fileRequest.getMultipartFile().transferTo(file);
-//
-//            Cloudinary cloudinary = new Cloudinary(CLOUDINARY_URL);
-//            Map uploadResult = cloudinary.uploader().upload(file, ObjectUtils.asMap());
-//
-//            FileMulti fileEntity = FileMulti.builder()
-//                    .fileType(FileType.IMG)
-//                    .name(fileRequest.getMultipartFile().getName())
-//                    .url((String)uploadResult.get("url") )
-//                    .build();
-//
-//            fileRepository.save(fileEntity);
-//
-//            return FileResponse.builder()
-//                    .id(fileEntity.getId())
-//                    .url(fileEntity.getUrl()).build();
-//
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//        }
-//
-//        //todo null?
-//        return null;
-//    }
     @Override
-    public FileResponse save(MultipartFile file) {
+    public FileResponse save(MultipartFile file){
         try {
             LocalDateTime localDateTime = LocalDateTime.now();
             String URl = "C:\\Users\\Dell\\IdeaProjects\\yssyk_cool\\src\\main\\resources\\images\\";
@@ -96,8 +62,9 @@ public class FileServiceImpl implements FileService {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return null;
+        return new FileResponse();
     }
+
     private static String getExtension(MultipartFile file) {
 
         String fullName = file.getOriginalFilename();

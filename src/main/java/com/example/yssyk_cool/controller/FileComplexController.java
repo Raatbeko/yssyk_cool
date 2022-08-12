@@ -42,7 +42,7 @@ public class FileComplexController {
     @RequestMapping(value = "/{id}", method = RequestMethod.POST, consumes = {"multipart/form-data"})
     @ApiOperation("Сохранение фотки по id комплекса")
     public FileResponse save(@ModelAttribute MultipartFile multipartFile,
-                             @PathVariable("id") Long complexId) {
+                             @PathVariable("id") Long complexId) throws Exception {
         return fileService.save(FileComplexRequest.builder()
                 .complexId(complexId)
                 .multipartFile(multipartFile)

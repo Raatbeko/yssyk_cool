@@ -1,6 +1,5 @@
 package com.example.yssyk_cool.service.impl;
 
-import com.example.yssyk_cool.dto.complex.request.ComplexForUpdateRequest;
 import com.example.yssyk_cool.dto.contactInfo.request.ContactInfoForUpdateRequest;
 import com.example.yssyk_cool.dto.contactInfo.request.ContactInfoRequest;
 import com.example.yssyk_cool.entity.ContactInfo;

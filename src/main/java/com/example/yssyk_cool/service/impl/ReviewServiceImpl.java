@@ -9,19 +9,16 @@ import com.example.yssyk_cool.mapper.ReviewMapper;
 import com.example.yssyk_cool.repository.ComplexRepository;
 import com.example.yssyk_cool.repository.ReviewRepository;
 import com.example.yssyk_cool.repository.UserRepository;
-import com.example.yssyk_cool.service.ComplexService;
 import com.example.yssyk_cool.service.ReviewService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

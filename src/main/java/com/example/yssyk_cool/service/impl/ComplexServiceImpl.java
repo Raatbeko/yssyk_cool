@@ -78,6 +78,7 @@ public class ComplexServiceImpl implements ComplexService {
         Complex complex = complexRepository.save(Complex.builder()
                 .complexName(t.getNameComplex())
                 .typeComplex(commonReference)
+                .aboutComplex(t.getAboutComplex())
                 .contactInfo(contactInfoService.save(t.getContactInfoRequest()))
                 .location(locationService.save(t.getLocationRequest()))
                 .user(userRepository.findById(t.getCreatedById()).orElseThrow(() -> new NotFoundException("user not found", HttpStatus.BAD_REQUEST))).build());
