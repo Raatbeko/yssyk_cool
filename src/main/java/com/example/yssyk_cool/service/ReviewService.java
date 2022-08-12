@@ -8,6 +8,6 @@ import com.example.yssyk_cool.entity.Review;
 import java.util.List;
 
 public interface ReviewService extends BaseService<ReviewResponse, ReviewRequest>{
-    List<ReviewResponse> getAllByComplexId(Complex complex);
 
+    List<ReviewResponse> getReviewsById(Complex complex);
 }

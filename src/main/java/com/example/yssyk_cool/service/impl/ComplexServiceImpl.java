@@ -156,18 +156,15 @@ public class ComplexServiceImpl implements ComplexService {
     private List<ComplexResponse> getComplexName(String complexName) {
         List<Complex> complexes = complexRepository.findAll().stream().filter(complex -> complex.getComplexName().equalsIgnoreCase(complexName)).collect(Collectors.toList());
         return toResponse(complexes);
-
     }
 
-    private List<ComplexResponse> getByCity(String title){
-        List<Complex> complexes = complexRepository.findByLocationCityTitle(title);
-
-        return  toResponse(complexes);
+    private List<ComplexResponse> getByCity(String title) {
+        List<Complex> complexes = complexRepository.findAll().stream().filter(complex -> complex.getLocation().getCity().getTitle().equalsIgnoreCase(title)).collect(Collectors.toList());
+        return toResponse(complexes);
     }
 
     private List<ComplexResponse> getByArea(String title) {
-        List<Complex> complexes = complexRepository.findByLocationAreaTitle(title);
-
+        List<Complex> complexes = complexRepository.findAll().stream().filter(complex -> complex.getLocation().getArea().getTitle().equalsIgnoreCase(title)).collect(Collectors.toList());
         return toResponse(complexes);
     }
 
@@ -230,6 +227,7 @@ public class ComplexServiceImpl implements ComplexService {
                 .typeComplex(complex.getTypeComplex().getTitle())
                 .name(complex.getComplexName())
                 .userId(complex.getUser().getId())
+                .aboutComplex(complex.getAboutComplex())
                 .contactInfoResponse(ContactInfoMapper.INSTANCE.toContactResponse(complex.getContactInfo()))
                 .fileResponses(getAllFile(complex.getId()))
                 .locationResponse(locationMapper.toLocationResponse(complex.getLocation()))

@@ -27,10 +27,6 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "created_by")
     User user;
 
-    @ManyToOne
-    @JoinColumn(name = "complex_id")
-    Complex complexId;
-
     @OneToOne
     @JoinColumn(name = "deleted_by")
     User deletedBy;

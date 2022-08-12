@@ -14,6 +14,7 @@ import com.example.yssyk_cool.service.ReviewService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,16 +64,6 @@ public class ReviewServiceImpl implements ReviewService {
         return ReviewMapper.INSTANCE.toReviewResponse(reviewRepository.findAll());
     }
 
-    @Override
-    public List<ReviewResponse> getAllByComplexId(Complex complex) {
-
-        return complex.getReviews().stream()
-                .filter(review -> review.getDeletedAt() == null)
-                .map(review -> ReviewResponse.builder()
-                        .id(review.getId())
-                        .grade(review.getGrade())
-                        .review(review.getReview()).build()).collect(Collectors.toList());
-    }
 
     @Override
     @Transactional
@@ -85,5 +76,10 @@ public class ReviewServiceImpl implements ReviewService {
         return ReviewMapper.INSTANCE.toReviewResponse(review);
     }
 
+    @Override
+    public List<ReviewResponse> getReviewsById(Complex complex) {
+
+        return ReviewMapper.INSTANCE.toReviewResponse(complex.getReviews());
+    }
 }
 

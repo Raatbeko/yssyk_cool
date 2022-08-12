@@ -1,4 +1,4 @@
-package com.example.yssyk_cool.mapper;
+package com.example.yssyk_cool.entity;
 
 public enum LocationTypeEnum {
 

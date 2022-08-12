@@ -105,10 +105,8 @@ CREATE TABLE reviews (
                          created_by int8 NULL,
                          grade int8 NOT NULL,
                          review varchar(255) NULL,
-                         complex_id int8 NOT NULL,
                          CONSTRAINT reviews_pkey PRIMARY KEY (id),
-                         CONSTRAINT fkbhr9u7onobphbqso88pv0t82d FOREIGN KEY (created_by) REFERENCES users(id),
-                         CONSTRAINT fk98ajl7pm083gfirfpkkka3hlx FOREIGN KEY (complex_id) REFERENCES complexes(id)
+                         CONSTRAINT fkbhr9u7onobphbqso88pv0t82d FOREIGN KEY (created_by) REFERENCES users(id)
 );
 
 CREATE TABLE file_complexes (

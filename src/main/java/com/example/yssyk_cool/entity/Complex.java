@@ -20,6 +20,9 @@ public class Complex extends BaseEntity {
     @Column(nullable = false)
     String complexName;
 
+    @Column(name = "about_complex",nullable = false)
+    String aboutComplex;
+
     @ManyToOne
     @JoinColumn(name = "location_id", nullable = false)
     Location location;

@@ -23,6 +23,8 @@ public class ComplexResponse {
 
     String typeComplex;
 
+    String aboutComplex;
+
     List<FileResponse> fileResponses;
 
     LocationResponse locationResponse;

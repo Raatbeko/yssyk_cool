@@ -35,7 +35,7 @@ public class ReviewController {
     @GetMapping("/get-all-by-complex-id/{id}")
     @ApiOperation("Получить все отзывы по id комплекса")
     public List<ReviewResponse> getAllByComplexId(@PathVariable("id") Complex complex){
-        return reviewService.getAllByComplexId(complex);
+        return reviewService.getReviewsById(complex);
     }
 
     @DeleteMapping("/{id}")
